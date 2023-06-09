@@ -33,6 +33,18 @@ class Gate
 
         const GateType getType() const { return _gateType; }
         const std::vector<int>& getQubits() const { return _qubits; }
+        void setType(const GateType gateType) { _gateType = gateType; }
+        void liftQubits(int numLift)
+        {
+            for(int &qubit: _qubits)
+                qubit += numLift;
+        }
+
+        void unliftQubits(int numLift)
+        {
+            for(int &qubit: _qubits)
+                qubit -= numLift;
+        }
 
     private:
         GateType _gateType;
@@ -62,6 +74,32 @@ class Circuit
 
         int getNumberQubits() const { return _nQubits; }
         int getGateCount() const { return _vGates.size(); }
+
+        void liftAllGateQubits(int numLift)
+        {
+            for(Gate* gate: _vGates)
+                gate->liftQubits(numLift);
+        }
+
+        void unliftAllGateQubits(int numLift)
+        {
+            for(Gate* gate: _vGates)
+                gate->unliftQubits(numLift);
+        }
+
+        void daggerAllGate()
+        {
+            for(Gate* gate: _vGates)
+            {
+                const GateType& gateType = gate->getType();
+                if(gateType == GateType::S) gate->setType(GateType::SDG);
+                else if(gateType == GateType::SDG) gate->setType(GateType::S);
+                else if(gateType == GateType::T) gate->setType(GateType::TDG);
+                else if(gateType == GateType::TDG) gate->setType(GateType::T);
+                else if(gateType == GateType::RX_PI_2) gate->setType(GateType::RX_PI_2_DG);
+                else if(gateType == GateType::RX_PI_2_DG) gate->setType(GateType::RX_PI_2);
+            }
+        }
 
     private:
         std::vector<Gate*> _vGates;
