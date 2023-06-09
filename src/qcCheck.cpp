@@ -57,12 +57,11 @@ void Checker::constructUandV(const Circuit *circuitU, const Circuit *circuitV)
 
     bool checkResult = eqCheckTwoTensor(_U, _V);
     if(checkResult)
-        std::cout << "Equivalent." << std::endl;
+        addElementToOutputJSON("equivalence", "equivalent");
     else
-        std::cout << "Not equivalent." << std::endl;
+        addElementToOutputJSON("equivalence", "not_equivalent");
 
-    std::cout << "Max node count: " << _maxNodeCount << std::endl;
-    std::cout << "r: "<< _U->_r << std::endl;
+    addElementToOutputJSON("num_nodes", std::to_string(_maxNodeCount));
 }
 
 /**Function*************************************************************
@@ -114,4 +113,49 @@ void Checker::initTensorToIdentityMatrix(Tensor *tensor)
             }
         }
     }
+}
+
+/**Function*************************************************************
+
+  Synopsis    [Add a pair of key/value strings into _outputJSON.]
+
+  Description []
+
+  SideEffects []
+
+  SeeAlso     []
+
+***********************************************************************/
+
+void Checker::addElementToOutputJSON(const std::string key, const std::string value)
+{
+    _outputJSON.push_back(std::make_pair(key, value));
+}
+
+/**Function*************************************************************
+
+  Synopsis    [Print the content of _outputJSON to the stdout.]
+
+  Description []
+
+  SideEffects []
+
+  SeeAlso     []
+
+***********************************************************************/
+
+void Checker::printOutputJSON() const
+{
+    std::cout << "{\n";
+    for(int i = 0; i < _outputJSON.size(); ++i)
+    {
+        auto &p = _outputJSON[i];
+        std::cout << "  ";
+        std::cout << "\"" << p.first << "\"";
+        std::cout << ": ";
+        std::cout << "\"" << p.second << "\"";
+        if(i != _outputJSON.size()-1) std::cout << ',';
+        std::cout << '\n';
+    }
+    std::cout << "}\n";
 }

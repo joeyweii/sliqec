@@ -8,7 +8,7 @@ LFLAGS = $(ROOT_DIR)/cudd/cudd/.libs/libcudd.a -lm -ldl -lreadline -ltinfo -lpth
 GFLAGS = -O3 -DNDEBUG 
 #GFLAGS = -Wall -g
 
-SliQTens: $(OBJ_FILES)
+SliQEC_v2: $(OBJ_FILES)
 	g++ $(GFLAGS) -o $@ $^ $(LFLAGS) 
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp

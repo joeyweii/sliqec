@@ -62,15 +62,12 @@ int main(int argc, char **argv)
     runtime = elapsedTime / 1000.0;
     memPeak = getPeakRSS();
     
-    std::cout << "----- Circuit Info. -----\n";
-    std::cout << "#Qubits: " << nQubits << '\n';
-    std::cout << "#Gates in circuit1: " << circuitU->getGateCount() << '\n';
-    std::cout << "#Gates in circuit2: " << circuitV->getGateCount() << '\n';
-
-    std::cout << "----- Resource Usage -----\n";
-    std::cout << "Runtime: " << runtime << " seconds\n";
-    std::cout << "Peak memory usage: " << memPeak << " bytes\n"; 
-    std::cout << "--------------------------\n";
+    checker.addElementToOutputJSON("num_qubits",  std::to_string(nQubits));
+    checker.addElementToOutputJSON("num_gates_circuit1", std::to_string(circuitU->getGateCount()));
+    checker.addElementToOutputJSON("num_gates_circuit2", std::to_string(circuitV->getGateCount()));
+    checker.addElementToOutputJSON("runtime", std::to_string(runtime));
+    checker.addElementToOutputJSON("memory", std::to_string(memPeak));
+    checker.printOutputJSON();
 
     return 0;
 }
