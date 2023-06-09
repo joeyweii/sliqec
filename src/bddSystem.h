@@ -33,8 +33,7 @@ class BDDSystem
         enum class BitWidthMode
         {
             ExtendBitWidth,
-            DropLSB,
-            DropMSB
+            DropLSB
         };
 
         explicit BDDSystem(int maxRank, int fBitWidthMode, bool fReorder)
@@ -45,7 +44,6 @@ class BDDSystem
         switch(fBitWidthMode)
         {
             case 1: _bitWidthMode = BitWidthMode::DropLSB; break;
-            case 2: _bitWidthMode = BitWidthMode::DropMSB; break;
             default: _bitWidthMode = BitWidthMode::ExtendBitWidth; 
         }
         if (fReorder) Cudd_AutodynEnable(_ddManager, CUDD_REORDER_SYMM_SIFT);
