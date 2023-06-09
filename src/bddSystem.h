@@ -36,18 +36,17 @@ class BDDSystem
             DropLSB
         };
 
-        explicit BDDSystem(int maxRank, int fBitWidthMode, bool fReorder)
-            :   _ddManager(nullptr),
-            _w(4), _maxNodeCount(0)
-    {
-        _ddManager = Cudd_Init(maxRank, maxRank, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
-        switch(fBitWidthMode)
+        explicit BDDSystem(int maxRank, int fInitBitWidth, int fBitWidthMode, bool fReorder)
+            :   _ddManager(nullptr), _w(4), _fInitBitWidth(fInitBitWidth), _maxNodeCount(0)
         {
-            case 1: _bitWidthMode = BitWidthMode::DropLSB; break;
-            default: _bitWidthMode = BitWidthMode::ExtendBitWidth; 
+            _ddManager = Cudd_Init(maxRank, maxRank, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
+            switch(fBitWidthMode)
+            {
+                case 1: _bitWidthMode = BitWidthMode::DropLSB; break;
+                default: _bitWidthMode = BitWidthMode::ExtendBitWidth; 
+            }
+            if (fReorder) Cudd_AutodynEnable(_ddManager, CUDD_REORDER_SYMM_SIFT);
         }
-        if (fReorder) Cudd_AutodynEnable(_ddManager, CUDD_REORDER_SYMM_SIFT);
-    }
 
         virtual ~BDDSystem()  
         {
@@ -77,7 +76,7 @@ class BDDSystem
         bool eqCheckTwoTensor(Tensor *tensor1, Tensor *tensor2);
 
         /* misc.cpp */
-        Tensor* newTensor(int r, int rank);
+        Tensor* newTensor(int rank);
         void deleteTensor(Tensor* tensor);
         void printTensor(Tensor* tensor) const;
         bool isTensorLSBZero(Tensor* tensor) const;
@@ -91,6 +90,7 @@ class BDDSystem
 
         DdManager *_ddManager;			// BDD manager.
         int _w;							// # of integers = 4.
+        int _fInitBitWidth;             // initial bitwidth when new a tensor
         unsigned long _maxNodeCount;	// node count.
         BitWidthMode	_bitWidthMode;  // mode of bits' control
 };

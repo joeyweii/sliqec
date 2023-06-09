@@ -12,9 +12,9 @@
 
  ***********************************************************************/
 
-Tensor* BDDSystem::newTensor(int r, int rank)
+Tensor* BDDSystem::newTensor(int rank)
 {
-    return new Tensor(r, rank);
+    return new Tensor(_fInitBitWidth, rank);
 }
 
 /**Function*************************************************************

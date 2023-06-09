@@ -12,24 +12,12 @@ Checker::Checker
     BDDSystem
     ( 
      nQubits,
+     fInitBitWidth,
      fBitWidthControl,
      fReorder
-    )
+    ),
+    _nQubits(nQubits)
 {
-    _U = newTensor(fInitBitWidth, nQubits*2);
-    _V = newTensor(fInitBitWidth, nQubits*2);
-}
-
-// Destructor
-Checker::~Checker()
-{
-    deleteTensor(_U);
-    deleteTensor(_V);
-}
-
-void Checker::check(const Circuit *circuitU, const Circuit * circuitV)
-{
-    constructUandV(circuitU, circuitV);
 }
 
 /**Function*************************************************************
@@ -43,8 +31,11 @@ void Checker::check(const Circuit *circuitU, const Circuit * circuitV)
   SeeAlso     []
 
  ***********************************************************************/
-void Checker::constructUandV(const Circuit *circuitU, const Circuit *circuitV)
+void Checker::checkByConstructFunctionality(const Circuit *circuitU, const Circuit *circuitV)
 {
+    Tensor* _U = newTensor(_nQubits*2);
+    Tensor* _V = newTensor(_nQubits*2);
+
     bool fTranspose = false;
 
     initTensorToIdentityMatrix(_U);
@@ -62,6 +53,9 @@ void Checker::constructUandV(const Circuit *circuitU, const Circuit *circuitV)
         addElementToOutputJSON("equivalence", "not_equivalent");
 
     addElementToOutputJSON("num_nodes", std::to_string(_maxNodeCount));
+
+    deleteTensor(_U);
+    deleteTensor(_V);
 }
 
 /**Function*************************************************************

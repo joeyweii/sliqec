@@ -53,7 +53,7 @@ int main(int argc, char **argv)
 
     Checker checker(nQubits, fInitBitWidth, fBitWidthControl, fReorder);
 
-    checker.check(circuitU, circuitV);
+    checker.checkByConstructFunctionality(circuitU, circuitV);
 
     gettimeofday(&tFinish, NULL);
     elapsedTime = (tFinish.tv_sec - tStart.tv_sec) * 1000.0;
