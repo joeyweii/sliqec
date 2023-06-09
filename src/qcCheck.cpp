@@ -80,7 +80,6 @@ void Checker::checkByConstructMiter(Circuit *circuitU, const Circuit *circuitV)
     initTensorToIdentityMatrix(identityMatrix);
 
     int sizeU = circuitU->getGateCount(), sizeV = circuitV->getGateCount();
-    int ratio = sizeV / sizeU;
     int idxU = 0, idxV = 0;
 
     while(idxU < sizeU || idxV < sizeV)
@@ -92,7 +91,7 @@ void Checker::checkByConstructMiter(Circuit *circuitU, const Circuit *circuitV)
         }
 
         int count = 0;
-        while(idxV < sizeV && count < ratio)
+        while(idxV < sizeV && idxV * sizeU < idxU * sizeV)
         {
             applyGate(circuitV->getGate(idxV), miter, false);
             ++count;
