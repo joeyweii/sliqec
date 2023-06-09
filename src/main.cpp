@@ -22,10 +22,10 @@ int main(int argc, char **argv)
          "default: 4")
         ("circuit1", po::value<std::string>()->implicit_value(""), "circuit1 under equivalence checking.\n")
         ("circuit2", po::value<std::string>()->implicit_value(""), "circuit2 under equivalence checking.\n")
-        ("approach", po::value<int>()->default_value(0), "approach of equivalence checking\n"
-                                                         "0: construct miter\n"
-                                                         "1: construct fucntionality\n"
-                                                         "2: simulation\n")
+        ("approach", po::value<std::string>()->default_value("miter"), "approach of equivalence checking\n"
+                                                         "miter: construct miter\n"
+                                                         "construct: construct fucntionality\n"
+                                                         "simulation: simulation\n")
         ;
 
     po::variables_map vm;
@@ -41,7 +41,7 @@ int main(int argc, char **argv)
     bool fReorder = vm["reorder"].as<bool>();
     int	 fBitWidthControl = vm["bitwidth_control"].as<int>();
     int	 fInitBitWidth = vm["init_bitwidth"].as<int>();
-    int  fApporach = vm["approach"].as<int>();
+    std::string fApproach = vm["approach"].as<std::string>();
 
     Circuit *circuitU = qasmParser(vm["circuit1"].as<std::string>());
     Circuit *circuitV = qasmParser(vm["circuit2"].as<std::string>());
@@ -58,11 +58,11 @@ int main(int argc, char **argv)
 
     Checker checker(nQubits, fInitBitWidth, fBitWidthControl, fReorder);
 
-    if(fApporach == 0)
+    if(fApproach == "miter")
         checker.checkByConstructMiter(circuitU, circuitV);
-    else if(fApporach == 1)
+    else if(fApproach == "construct")
         checker.checkByConstructFunctionality(circuitU, circuitV);
-    else if(fApporach == 2)
+    else if(fApproach == "simulation")
         checker.checkBySimulation(circuitU, circuitV);
     else assert(0);
 
