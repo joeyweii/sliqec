@@ -221,7 +221,8 @@ void BDDSystem::dropTensorBits(Tensor *tensor)
  ***********************************************************************/
 void BDDSystem::increaseTensorKByOne(Tensor *tensor)
 {
-    DdNode *carry, *g, *d, *tmp, *tmp2, *tmp3;
+    DdNode *carry = nullptr, *g = nullptr, *d = nullptr, *tmp = nullptr,
+           *tmp2 = nullptr, *tmp3 = nullptr;
     bool isOverflow = false;
 
     auto copyAllBDD = tensor->_allBDD;

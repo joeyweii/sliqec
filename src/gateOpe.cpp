@@ -4,7 +4,8 @@
 
 void BDDSystem::Toffoli(Tensor *tensor, const std::vector<int> &qubits)
 {
-    DdNode *term1, *term2, *term3, *g, *tmp;
+    DdNode *term1 = nullptr, *term2 = nullptr, *term3 = nullptr, *g = nullptr,
+           *tmp = nullptr;
 
     const int targ = qubits.back();
     std::vector<int> cont(qubits.begin(), qubits.end() - 1);
@@ -228,7 +229,8 @@ void BDDSystem::Hadamard(Tensor *tensor, const std::vector<int> &qubits)
 
     tensor->_k += 1;
 
-    DdNode *g, *d, *c, *tmp, *term1, *term2;
+    DdNode *g = nullptr, *d = nullptr, *c = nullptr, *tmp = nullptr,
+           *term1 = nullptr, *term2 = nullptr;
 
     int isOverflow = 0;
 
@@ -330,7 +332,8 @@ void BDDSystem::Rx_pi_2(Tensor *tensor, const std::vector<int> &qubits)
     int nshift = _w / 2;
     int isOverflow = 0;
 
-    DdNode *d, *c, *tmp, *term1, *term2;
+    DdNode *d = nullptr, *c = nullptr, *tmp = nullptr, *term1 = nullptr,
+           *term2 = nullptr;
     auto copy = tensor->_allBDD;
     for (int i = 0; i < _w; i++)
         for (int j = 0; j < tensor->_r; j++)
@@ -434,7 +437,8 @@ void BDDSystem::Rx_pi_2_dagger(Tensor *tensor, const std::vector<int> &qubits)
     int nshift = _w / 2;
     int isOverflow = 0;
 
-    DdNode *d, *c, *tmp, *term1, *term2;
+    DdNode *d = nullptr, *c = nullptr, *tmp = nullptr, *term1 = nullptr,
+           *term2 = nullptr;
 
     auto copy = tensor->_allBDD;
     for (int i = 0; i < _w; i++)
@@ -540,7 +544,8 @@ void BDDSystem::Ry_pi_2(Tensor *tensor,
 
     int isOverflow = 0;
 
-    DdNode *g, *d, *c, *tmp, *term1, *term2, *var;
+    DdNode *g = nullptr, *d = nullptr, *c = nullptr, *tmp = nullptr,
+           *term1 = nullptr, *term2 = nullptr, *var = nullptr;
 
     if (fTranspose)
         var = Cudd_Not(Cudd_bddIthVar(_ddManager, targ));
@@ -636,7 +641,8 @@ void BDDSystem::Ry_pi_2_dagger(Tensor *tensor,
 
     int isOverflow = 0;
 
-    DdNode *g, *d, *c, *tmp, *term1, *term2, *var;
+    DdNode *g = nullptr, *d = nullptr, *c = nullptr, *tmp = nullptr,
+           *term1 = nullptr, *term2 = nullptr, *var = nullptr;
 
     if (fTranspose)
         var = Cudd_bddIthVar(_ddManager, targ);
@@ -731,7 +737,8 @@ void BDDSystem::Phase_shift(Tensor *tensor,
     int nshift = _w / phase;
     int isOverflow = 0;
 
-    DdNode *g, *c, *tmp, *term1, *term2;
+    DdNode *g = nullptr, *c = nullptr, *tmp = nullptr, *term1 = nullptr,
+           *term2 = nullptr;
 
     auto copy = tensor->_allBDD;
     for (int i = 0; i < _w; i++)
@@ -841,7 +848,8 @@ void BDDSystem::Phase_shift_dagger(Tensor *tensor,
     int nshift = _w / abs(phase);
     int isOverflow = 0;
 
-    DdNode *g, *c, *tmp, *term1, *term2;
+    DdNode *g = nullptr, *c = nullptr, *tmp = nullptr, *term1 = nullptr,
+           *term2 = nullptr;
 
     auto copy = tensor->_allBDD;
     for (int i = 0; i < _w; i++)
@@ -946,7 +954,7 @@ void BDDSystem::PauliX(Tensor *tensor, const std::vector<int> &qubits)
 
     assert(targ >= 0 && targ < tensor->_rank);
 
-    DdNode *tmp, *term1, *term2;
+    DdNode *tmp = nullptr, *term1 = nullptr, *term2 = nullptr;
 
     for (int i = 0; i < _w; i++) // F = tensor->_allBDD[i][j]
     {
@@ -997,7 +1005,8 @@ void BDDSystem::PauliY(Tensor *tensor,
 
     int nshift = _w / 2;
 
-    DdNode *g, *c, *tmp, *term1, *term2, *var;
+    DdNode *g = nullptr, *c = nullptr, *tmp = nullptr, *term1 = nullptr,
+           *term2 = nullptr, *var = nullptr;
     int isOverflow = 0;
 
     if (fTranspose)
@@ -1122,7 +1131,8 @@ void BDDSystem::PauliY(Tensor *tensor,
 
 void BDDSystem::PauliZ(Tensor *tensor, const std::vector<int> &qubits)
 {
-    DdNode *c, *tmp, *term1, *term2, *inter, *qubit_and;
+    DdNode *c = nullptr, *tmp = nullptr, *term1 = nullptr, *term2 = nullptr,
+           *inter = nullptr, *qubit_and = nullptr;
 
     // Init qubit and
     qubit_and = Cudd_ReadOne(_ddManager);
