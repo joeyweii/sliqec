@@ -6,16 +6,9 @@ from tqdm import tqdm
 if __name__ == '__main__':
     nQubit = 5
     nGate = 100
+    approaches = ["miter", "construct"]
 
-    for approach in range(2):
-        approachName = ""
-        if(approach == 0):
-            approachName = "construct miter"
-        elif(approach == 1):
-            approachName = "construct functionality"
-        else:
-            assert(0)
-
+    for approach in approaches:
         for eq in range(2):
             eqName = ""
             if(eq == 0):
@@ -25,7 +18,7 @@ if __name__ == '__main__':
             else:
                 assert(0)
 
-            for seed in tqdm(range(100), desc='{} | {}'.format(eqName, approachName)):
+            for seed in tqdm(range(100), desc='{} | {}'.format(eqName, approach)):
                 genUCommand = "python3 ./genRandom.py {} {} U.qasm {}".format(nQubit, nGate, seed)
                 subprocess.run(genUCommand, shell=True)
                 if(eq == 1):
