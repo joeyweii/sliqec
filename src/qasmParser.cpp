@@ -19,7 +19,7 @@
 
  ***********************************************************************/
 
-Circuit* qasmParser(const std::string &filename)
+Circuit *qasmParser(const std::string &filename)
 {
 
     // Parse QASM files
@@ -28,15 +28,16 @@ Circuit* qasmParser(const std::string &filename)
     inFile.open(filename);
     if (!inFile)
     {
-        std::cerr << "File \"" << filename << "\" cannot be opened." << std::endl;
+        std::cerr << "File \"" << filename << "\" cannot be opened."
+                  << std::endl;
         return 0;
     }
 
-    Circuit* circuit = nullptr;
+    Circuit *circuit = nullptr;
     std::string inStr;
 
     int nQubits = -1;
-    while(getline(inFile, inStr))
+    while (getline(inFile, inStr))
     {
         inStr = inStr.substr(0, inStr.find("//"));
         if (inStr.find_first_not_of("\t\n ") == std::string::npos) continue;
@@ -51,10 +52,22 @@ Circuit* qasmParser(const std::string &filename)
             nQubits = stoi(inStr);
             circuit = new Circuit(nQubits);
         }
-        else if (inStr == "creg"){;}
-        else if (inStr == "OPENQASM"){;}
-        else if (inStr == "include"){;}
-        else if (inStr == "measure"){;}
+        else if (inStr == "creg")
+        {
+            ;
+        }
+        else if (inStr == "OPENQASM")
+        {
+            ;
+        }
+        else if (inStr == "include")
+        {
+            ;
+        }
+        else if (inStr == "measure")
+        {
+            ;
+        }
         else
         {
             assert(circuit);
@@ -128,7 +141,8 @@ Circuit* qasmParser(const std::string &filename)
                 getline(inStr_ss, inStr, ']');
                 int iQubit = stoi(inStr);
                 assert(iQubit < nQubits);
-                circuit->addGate(GateType::RX_PI_2, std::vector<int>(1, iQubit));
+                circuit->addGate(GateType::RX_PI_2,
+                                 std::vector<int>(1, iQubit));
             }
             else if (inStr == "rx(-pi/2)")
             {
@@ -136,7 +150,8 @@ Circuit* qasmParser(const std::string &filename)
                 getline(inStr_ss, inStr, ']');
                 int iQubit = stoi(inStr);
                 assert(iQubit < nQubits);
-                circuit->addGate(GateType::RX_PI_2_DG, std::vector<int>(1, iQubit));
+                circuit->addGate(GateType::RX_PI_2_DG,
+                                 std::vector<int>(1, iQubit));
             }
             else if (inStr == "ry(pi/2)")
             {
@@ -144,7 +159,8 @@ Circuit* qasmParser(const std::string &filename)
                 getline(inStr_ss, inStr, ']');
                 int iQubit = stoi(inStr);
                 assert(iQubit < nQubits);
-                circuit->addGate(GateType::RY_PI_2, std::vector<int>(1, iQubit));
+                circuit->addGate(GateType::RY_PI_2,
+                                 std::vector<int>(1, iQubit));
             }
             else if (inStr == "ry(-pi/2)")
             {
@@ -152,7 +168,8 @@ Circuit* qasmParser(const std::string &filename)
                 getline(inStr_ss, inStr, ']');
                 int iQubit = stoi(inStr);
                 assert(iQubit < nQubits);
-                circuit->addGate(GateType::RY_PI_2_DG, std::vector<int>(1, iQubit));
+                circuit->addGate(GateType::RY_PI_2_DG,
+                                 std::vector<int>(1, iQubit));
             }
             else if (inStr == "cx")
             {
@@ -206,7 +223,7 @@ Circuit* qasmParser(const std::string &filename)
             {
                 std::vector<int> iQubitsList(0);
                 getline(inStr_ss, inStr, '[');
-                while(getline(inStr_ss, inStr, ']'))
+                while (getline(inStr_ss, inStr, ']'))
                 {
                     iQubitsList.push_back(stoi(inStr));
                     assert(iQubitsList.back() < nQubits);
@@ -217,7 +234,9 @@ Circuit* qasmParser(const std::string &filename)
             else
             {
                 std::cerr << std::endl
-                    << "[Warning]: Syntax \'" << inStr << "\' is not supported. The line is ignored ..." << std::endl;
+                          << "[Warning]: Syntax \'" << inStr
+                          << "\' is not supported. The line is ignored ..."
+                          << std::endl;
             }
         }
     }

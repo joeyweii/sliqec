@@ -1,28 +1,19 @@
 #include "qcCheck.h"
 
 // Constructor
-Checker::Checker
-(
-    int nQubits,
-    int fInitBitWidth,
-    int fBitWidthControl,
-    bool fReorder
-)
-:   
-    BDDSystem
-    ( 
-     nQubits,
-     fInitBitWidth,
-     fBitWidthControl,
-     fReorder
-    ),
-    _nQubits(nQubits)
+Checker::Checker(int nQubits,
+                 int fInitBitWidth,
+                 int fBitWidthControl,
+                 bool fReorder)
+    : BDDSystem(nQubits, fInitBitWidth, fBitWidthControl, fReorder)
+    , _nQubits(nQubits)
 {
 }
 
 /**Function*************************************************************
 
-  Synopsis    [Construct the unitary matrix of U and V and check their equivalence.]
+  Synopsis    [Construct the unitary matrix of U and V and check their
+ equivalence.]
 
   Description []
 
@@ -31,23 +22,24 @@ Checker::Checker
   SeeAlso     []
 
  ***********************************************************************/
-void Checker::checkByConstructFunctionality(const Circuit *circuitU, const Circuit *circuitV)
+void Checker::checkByConstructFunctionality(const Circuit *circuitU,
+                                            const Circuit *circuitV)
 {
-    Tensor* _U = newTensor(_nQubits*2);
-    Tensor* _V = newTensor(_nQubits*2);
+    Tensor *_U = newTensor(_nQubits * 2);
+    Tensor *_V = newTensor(_nQubits * 2);
 
     bool fTranspose = false;
 
     initTensorToIdentityMatrix(_U);
-    for(int i = 0; i < circuitU->getGateCount(); ++i)
+    for (int i = 0; i < circuitU->getGateCount(); ++i)
         applyGate(circuitU->getGate(i), _U, fTranspose);
 
     initTensorToIdentityMatrix(_V);
-    for(int i = 0; i < circuitV->getGateCount(); ++i)
+    for (int i = 0; i < circuitV->getGateCount(); ++i)
         applyGate(circuitV->getGate(i), _V, fTranspose);
 
     bool checkResult = eqCheckTwoTensor(_U, _V);
-    if(checkResult)
+    if (checkResult)
         addElementToOutputJSON("equivalence", "equivalent");
     else
         addElementToOutputJSON("equivalence", "not_equivalent");
@@ -69,23 +61,24 @@ void Checker::checkByConstructFunctionality(const Circuit *circuitU, const Circu
   SeeAlso     []
 
  ***********************************************************************/
-void Checker::checkBySimulation(const Circuit *circuitU, const Circuit *circuitV)
+void Checker::checkBySimulation(const Circuit *circuitU,
+                                const Circuit *circuitV)
 {
-    Tensor* _U = newTensor(_nQubits);
-    Tensor* _V = newTensor(_nQubits);
+    Tensor *_U = newTensor(_nQubits);
+    Tensor *_V = newTensor(_nQubits);
 
     bool fTranspose = false;
 
     initTensorToBasisState(_U);
-    for(int i = 0; i < circuitU->getGateCount(); ++i)
+    for (int i = 0; i < circuitU->getGateCount(); ++i)
         applyGate(circuitU->getGate(i), _U, fTranspose);
 
     initTensorToBasisState(_V);
-    for(int i = 0; i < circuitV->getGateCount(); ++i)
+    for (int i = 0; i < circuitV->getGateCount(); ++i)
         applyGate(circuitV->getGate(i), _V, fTranspose);
 
     bool checkResult = eqCheckTwoTensor(_U, _V);
-    if(checkResult)
+    if (checkResult)
         addElementToOutputJSON("equivalence", "probably_equivalent");
     else
         addElementToOutputJSON("equivalence", "not_equivalent");
@@ -98,7 +91,8 @@ void Checker::checkBySimulation(const Circuit *circuitU, const Circuit *circuitV
 
 /**Function*************************************************************
 
-  Synopsis    [Construct the miter of U and V and check if the miter equals to I.]
+  Synopsis    [Construct the miter of U and V and check if the miter equals to
+ I.]
 
   Description []
 
@@ -112,24 +106,24 @@ void Checker::checkByConstructMiter(Circuit *circuitU, const Circuit *circuitV)
     circuitU->daggerAllGate();
     circuitU->liftAllGateQubits(_nQubits);
 
-    Tensor* miter = newTensor(_nQubits*2);
-    Tensor* identityMatrix = newTensor(_nQubits*2);
+    Tensor *miter = newTensor(_nQubits * 2);
+    Tensor *identityMatrix = newTensor(_nQubits * 2);
     initTensorToIdentityMatrix(miter);
     initTensorToIdentityMatrix(identityMatrix);
 
     int sizeU = circuitU->getGateCount(), sizeV = circuitV->getGateCount();
     int idxU = 0, idxV = 0;
 
-    while(idxU < sizeU || idxV < sizeV)
+    while (idxU < sizeU || idxV < sizeV)
     {
-        if(idxU < sizeU)
+        if (idxU < sizeU)
         {
             applyGate(circuitU->getGate(idxU), miter, true);
             ++idxU;
         }
 
         int count = 0;
-        while(idxV < sizeV && idxV * sizeU < idxU * sizeV)
+        while (idxV < sizeV && idxV * sizeU < idxU * sizeV)
         {
             applyGate(circuitV->getGate(idxV), miter, false);
             ++count;
@@ -138,7 +132,7 @@ void Checker::checkByConstructMiter(Circuit *circuitU, const Circuit *circuitV)
     }
 
     bool checkResult = eqCheckTwoTensor(miter, identityMatrix);
-    if(checkResult)
+    if (checkResult)
         addElementToOutputJSON("equivalence", "equivalent");
     else
         addElementToOutputJSON("equivalence", "not_equivalent");
@@ -170,17 +164,22 @@ void Checker::initTensorToIdentityMatrix(Tensor *tensor)
 
     for (int i = 0; i < tensor->_r; ++i)
     {
-        for(int j = 0; j < _w; ++j)
+        for (int j = 0; j < _w; ++j)
         {
-            if(i == 0 && j == _w-1)
+            if (i == 0 && j == _w - 1)
             {
                 tensor->_allBDD[j][i] = Cudd_ReadOne(_ddManager);
                 Cudd_Ref(tensor->_allBDD[j][i]);
-                for(int k = 0; k < n; ++k)
+                for (int k = 0; k < n; ++k)
                 {
-                    tmp1 = Cudd_bddAnd(_ddManager, Cudd_Not(Cudd_bddIthVar(_ddManager, k)), Cudd_Not(Cudd_bddIthVar(_ddManager, k + n)));
+                    tmp1 = Cudd_bddAnd(
+                        _ddManager,
+                        Cudd_Not(Cudd_bddIthVar(_ddManager, k)),
+                        Cudd_Not(Cudd_bddIthVar(_ddManager, k + n)));
                     Cudd_Ref(tmp1);
-                    tmp2 = Cudd_bddAnd(_ddManager, Cudd_bddIthVar(_ddManager, k), Cudd_bddIthVar(_ddManager, k + n));
+                    tmp2 = Cudd_bddAnd(_ddManager,
+                                       Cudd_bddIthVar(_ddManager, k),
+                                       Cudd_bddIthVar(_ddManager, k + n));
                     Cudd_Ref(tmp2);
                     tmp3 = Cudd_bddOr(_ddManager, tmp1, tmp2);
                     Cudd_Ref(tmp3);
@@ -218,7 +217,7 @@ void Checker::initTensorToBasisState(Tensor *tensor)
 {
     std::vector<bool> basisState(tensor->_rank, false);
 
-	DdNode *var, *tmp;
+    DdNode *var, *tmp;
 
     for (int i = 0; i < tensor->_r; i++)
     {
@@ -236,9 +235,11 @@ void Checker::initTensorToBasisState(Tensor *tensor)
             {
                 var = Cudd_bddIthVar(_ddManager, j);
                 if (!basisState[j])
-                    tmp = Cudd_bddAnd(_ddManager, Cudd_Not(var), tensor->_allBDD[_w - 1][i]);
+                    tmp = Cudd_bddAnd(
+                        _ddManager, Cudd_Not(var), tensor->_allBDD[_w - 1][i]);
                 else
-                    tmp = Cudd_bddAnd(_ddManager, var, tensor->_allBDD[_w - 1][i]);
+                    tmp = Cudd_bddAnd(
+                        _ddManager, var, tensor->_allBDD[_w - 1][i]);
                 Cudd_Ref(tmp);
                 Cudd_RecursiveDeref(_ddManager, tensor->_allBDD[_w - 1][i]);
                 tensor->_allBDD[_w - 1][i] = tmp;
@@ -267,7 +268,8 @@ void Checker::initTensorToBasisState(Tensor *tensor)
 
  ***********************************************************************/
 
-void Checker::addElementToOutputJSON(const std::string key, const std::string value)
+void Checker::addElementToOutputJSON(const std::string key,
+                                     const std::string value)
 {
     _outputJSON.push_back(std::make_pair(key, value));
 }
@@ -287,14 +289,14 @@ void Checker::addElementToOutputJSON(const std::string key, const std::string va
 void Checker::printOutputJSON() const
 {
     std::cout << "{\n";
-    for(int i = 0; i < _outputJSON.size(); ++i)
+    for (int i = 0; i < _outputJSON.size(); ++i)
     {
         auto &p = _outputJSON[i];
         std::cout << "  ";
         std::cout << "\"" << p.first << "\"";
         std::cout << ": ";
         std::cout << "\"" << p.second << "\"";
-        if(i != _outputJSON.size()-1) std::cout << ',';
+        if (i != _outputJSON.size() - 1) std::cout << ',';
         std::cout << '\n';
     }
     std::cout << "}\n";
