@@ -289,7 +289,7 @@ void Checker::addElementToOutputJSON(const std::string key,
 void Checker::printOutputJSON() const
 {
     std::cout << "{\n";
-    for (int i = 0; i < _outputJSON.size(); ++i)
+    for (size_t i = 0; i < _outputJSON.size(); ++i)
     {
         auto &p = _outputJSON[i];
         std::cout << "  ";
