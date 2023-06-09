@@ -22,7 +22,7 @@ Checker::Checker
 
 /**Function*************************************************************
 
-  Synopsis    [Construct the unitary matrix of U and V.]
+  Synopsis    [Construct the unitary matrix of U and V and check their equivalence.]
 
   Description []
 
@@ -56,6 +56,62 @@ void Checker::checkByConstructFunctionality(const Circuit *circuitU, const Circu
 
     deleteTensor(_U);
     deleteTensor(_V);
+}
+
+/**Function*************************************************************
+
+  Synopsis    [Construct the miter of U and V and check if the miter equals to I.]
+
+  Description []
+
+  SideEffects []
+
+  SeeAlso     []
+
+ ***********************************************************************/
+void Checker::checkByConstructMiter(Circuit *circuitU, const Circuit *circuitV)
+{
+    circuitU->daggerAllGate();
+    circuitU->liftAllGateQubits(_nQubits);
+
+    Tensor* miter = newTensor(_nQubits*2);
+    Tensor* identityMatrix = newTensor(_nQubits*2);
+    initTensorToIdentityMatrix(miter);
+    initTensorToIdentityMatrix(identityMatrix);
+
+    int sizeU = circuitU->getGateCount(), sizeV = circuitV->getGateCount();
+    int ratio = sizeV / sizeU;
+    int idxU = 0, idxV = 0;
+
+    while(idxU < sizeU || idxV < sizeV)
+    {
+        if(idxU < sizeU)
+        {
+            applyGate(circuitU->getGate(idxU), miter, true);
+            ++idxU;
+        }
+
+        int count = 0;
+        while(idxV < sizeV && count < ratio)
+        {
+            applyGate(circuitV->getGate(idxV), miter, false);
+            ++count;
+            ++idxV;
+        }
+    }
+
+    bool checkResult = eqCheckTwoTensor(miter, identityMatrix);
+    if(checkResult)
+        addElementToOutputJSON("equivalence", "equivalent");
+    else
+        addElementToOutputJSON("equivalence", "not_equivalent");
+
+    addElementToOutputJSON("num_nodes", std::to_string(_maxNodeCount));
+
+    circuitU->daggerAllGate();
+    circuitU->unliftAllGateQubits(_nQubits);
+    deleteTensor(miter);
+    deleteTensor(identityMatrix);
 }
 
 /**Function*************************************************************

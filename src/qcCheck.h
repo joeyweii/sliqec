@@ -19,6 +19,7 @@ class Checker : public BDDSystem
         void addElementToOutputJSON(const std::string key, const std::string value);
         void printOutputJSON() const;
         void checkByConstructFunctionality(const Circuit *circuitU, const Circuit * circuitV);
+        void checkByConstructMiter(Circuit *circuitU, const Circuit *circuitV);
 
     private:
         int _nQubits;
