@@ -1,19 +1,17 @@
 #include "bddSystem.h"
 
-/*
-Apply gate on the quantum data.
-*/
+// Apply gate on the quantum data.
 
 void BDDSystem::Toffoli(Tensor* tensor, const std::vector<int> &qubits)
 {
     DdNode *term1, *term2, *term3, *g, *tmp;
 
-	const int targ = qubits.back();
-	std::vector<int> cont(qubits.begin(), qubits.end()-1);
+    const int targ = qubits.back();
+    std::vector<int> cont(qubits.begin(), qubits.end()-1);
 
-	assert(targ < tensor->_rank && targ >= 0);
-	for(const auto ele: cont)
-		assert(ele >= 0 && ele < tensor->_rank && ele != targ);
+    assert(targ < tensor->_rank && targ >= 0);
+    for(const auto ele: cont)
+        assert(ele >= 0 && ele < tensor->_rank && ele != targ);
 
     g = Cudd_ReadOne(_ddManager);
     Cudd_Ref(g);
@@ -99,16 +97,16 @@ void BDDSystem::Fredkin(Tensor* tensor, const std::vector<int> &qubits)
 {
     DdNode *term1, *term2, *term3, *g, *tmp, *tmp0;
 
-	assert(qubits.size() >= 2);
-	const int swapA = qubits[qubits.size()-1];
-	const int swapB = qubits[qubits.size()-2];
-	std::vector<int> cont(qubits.begin(), qubits.end()-2);
+    assert(qubits.size() >= 2);
+    const int swapA = qubits[qubits.size()-1];
+    const int swapB = qubits[qubits.size()-2];
+    std::vector<int> cont(qubits.begin(), qubits.end()-2);
 
-	assert(swapA >= 0 && swapA < tensor->_rank);
-	assert(swapB >= 0 && swapB < tensor->_rank);
-	assert(swapA != swapB);
-	for(const auto ele: cont)
-		assert(ele >= 0 && ele < tensor->_rank && ele != swapA && ele != swapB);
+    assert(swapA >= 0 && swapA < tensor->_rank);
+    assert(swapB >= 0 && swapB < tensor->_rank);
+    assert(swapA != swapB);
+    for(const auto ele: cont)
+        assert(ele >= 0 && ele < tensor->_rank && ele != swapA && ele != swapB);
 
     g = Cudd_ReadOne(_ddManager);
     Cudd_Ref(g);
@@ -217,10 +215,10 @@ void BDDSystem::Fredkin(Tensor* tensor, const std::vector<int> &qubits)
 
 void BDDSystem::Hadamard(Tensor *tensor, const std::vector<int> &qubits)
 {
-	assert(qubits.size() == 1);
-	const int targ = qubits.back(); 
-	
-	assert(targ >= 0 && targ < tensor->_rank);
+    assert(qubits.size() == 1);
+    const int targ = qubits.back(); 
+
+    assert(targ >= 0 && targ < tensor->_rank);
 
     tensor->_k += 1;
 
@@ -262,11 +260,11 @@ void BDDSystem::Hadamard(Tensor *tensor, const std::vector<int> &qubits)
 
             // Detect overflow
             if ((j == tensor->_r - 1) && !isOverflow && checkAdderOverflow(g, d, c))
-			{
-				incBDDsBitWidth(tensor->_allBDD); 
-				++tensor->_r;
-				isOverflow = 1;
-			}
+            {
+                incBDDsBitWidth(tensor->_allBDD); 
+                ++tensor->_r;
+                isOverflow = 1;
+            }
 
             // Sum
             Cudd_RecursiveDeref(_ddManager, tensor->_allBDD[i][j]);
@@ -305,15 +303,15 @@ void BDDSystem::Hadamard(Tensor *tensor, const std::vector<int> &qubits)
         }
     }
 
-	if(isOverflow)
-		dropTensorBits(tensor);
+    if(isOverflow)
+        dropTensorBits(tensor);
 }
 
 void BDDSystem::Rx_pi_2(Tensor *tensor, const std::vector<int> &qubits)
 {
-	assert(qubits.size() == 1);
-	const int targ = qubits.back();
-	assert(targ >= 0 && targ < tensor->_rank);
+    assert(qubits.size() == 1);
+    const int targ = qubits.back();
+    assert(targ >= 0 && targ < tensor->_rank);
 
     tensor->_k += 1;
 
@@ -321,9 +319,9 @@ void BDDSystem::Rx_pi_2(Tensor *tensor, const std::vector<int> &qubits)
     int isOverflow = 0;
 
     DdNode *d, *c, *tmp, *term1, *term2;
-	auto copy = tensor->_allBDD;
+    auto copy = tensor->_allBDD;
     for (int i = 0; i < _w; i++)
-         for (int j = 0; j < tensor->_r; j++)
+        for (int j = 0; j < tensor->_r; j++)
             Cudd_Ref(copy[i][j]);
 
     for (int i = 0; i < _w; i++)
@@ -356,12 +354,12 @@ void BDDSystem::Rx_pi_2(Tensor *tensor, const std::vector<int> &qubits)
             Cudd_RecursiveDeref(_ddManager, term2);
             // Detect overflow
             if ((j == tensor->_r - 1) && !isOverflow && checkAdderOverflow(copy[i][j], d, c))
-			{
-				incBDDsBitWidth(tensor->_allBDD);
-				incBDDsBitWidth(copy);
-				++tensor->_r;
-				isOverflow = 1;
-			}
+            {
+                incBDDsBitWidth(tensor->_allBDD);
+                incBDDsBitWidth(copy);
+                ++tensor->_r;
+                isOverflow = 1;
+            }
             // Sum
             Cudd_RecursiveDeref(_ddManager, tensor->_allBDD[i][j]);
             tensor->_allBDD[i][j] = Cudd_bddXor(_ddManager, copy[i][j], d);
@@ -397,19 +395,19 @@ void BDDSystem::Rx_pi_2(Tensor *tensor, const std::vector<int> &qubits)
     }
 
     for (int i = 0; i < _w; i++)
-		for (int j = 0; j < tensor->_r; j++)
-			Cudd_RecursiveDeref(_ddManager, copy[i][j]);
+        for (int j = 0; j < tensor->_r; j++)
+            Cudd_RecursiveDeref(_ddManager, copy[i][j]);
 
-	if(isOverflow)
-		dropTensorBits(tensor);
+    if(isOverflow)
+        dropTensorBits(tensor);
 }
 
 void BDDSystem::Rx_pi_2_dagger(Tensor *tensor, const std::vector<int> &qubits)
 {
-	assert(qubits.size() == 1);
-	const int targ = qubits.back();
+    assert(qubits.size() == 1);
+    const int targ = qubits.back();
 
-	assert(targ >= 0 && targ < tensor->_rank);
+    assert(targ >= 0 && targ < tensor->_rank);
 
     tensor->_k += 1;
 
@@ -418,9 +416,9 @@ void BDDSystem::Rx_pi_2_dagger(Tensor *tensor, const std::vector<int> &qubits)
 
     DdNode *d, *c, *tmp, *term1, *term2;
 
-	auto copy = tensor->_allBDD;
+    auto copy = tensor->_allBDD;
     for (int i = 0; i < _w; i++)
-         for (int j = 0; j < tensor->_r; j++)
+        for (int j = 0; j < tensor->_r; j++)
             Cudd_Ref(copy[i][j]);
 
     for (int i = 0; i < _w; i++)
@@ -446,19 +444,19 @@ void BDDSystem::Rx_pi_2_dagger(Tensor *tensor, const std::vector<int> &qubits)
             Cudd_Ref(tmp);
             Cudd_RecursiveDeref(_ddManager, term2);
             term2 = tmp;
-			if(i < nshift) d = Cudd_bddOr(_ddManager, term1, term2);
-			else d = Cudd_Not(Cudd_bddOr(_ddManager, term1, term2));
+            if(i < nshift) d = Cudd_bddOr(_ddManager, term1, term2);
+            else d = Cudd_Not(Cudd_bddOr(_ddManager, term1, term2));
             Cudd_Ref(d);
             Cudd_RecursiveDeref(_ddManager, term1);
             Cudd_RecursiveDeref(_ddManager, term2);
             // Detect overflow
             if ((j == tensor->_r - 1) && !isOverflow && checkAdderOverflow(copy[i][j], d, c))
-			{
-				incBDDsBitWidth(tensor->_allBDD);
-				incBDDsBitWidth(copy);
-				++tensor->_r;
-				isOverflow = 1;
-			}
+            {
+                incBDDsBitWidth(tensor->_allBDD);
+                incBDDsBitWidth(copy);
+                ++tensor->_r;
+                isOverflow = 1;
+            }
             // Sum
             Cudd_RecursiveDeref(_ddManager, tensor->_allBDD[i][j]);
             tensor->_allBDD[i][j] = Cudd_bddXor(_ddManager, copy[i][j], d);
@@ -492,21 +490,21 @@ void BDDSystem::Rx_pi_2_dagger(Tensor *tensor, const std::vector<int> &qubits)
             }
         }
     }
-	
-	for (int i = 0; i < _w; i++)
+
+    for (int i = 0; i < _w; i++)
         for (int j = 0; j < tensor->_r; j++)
             Cudd_RecursiveDeref(_ddManager, copy[i][j]);
 
-	if(isOverflow)
-		dropTensorBits(tensor);
+    if(isOverflow)
+        dropTensorBits(tensor);
 }
 
 void BDDSystem::Ry_pi_2(Tensor *tensor, const std::vector<int> &qubits, const bool fTranspose)
 {
-	assert(qubits.size() == 1);
-	const int targ = qubits.back();
+    assert(qubits.size() == 1);
+    const int targ = qubits.back();
 
-	assert(targ >= 0 && targ < tensor->_rank);
+    assert(targ >= 0 && targ < tensor->_rank);
 
     tensor->_k += 1;
 
@@ -547,11 +545,11 @@ void BDDSystem::Ry_pi_2(Tensor *tensor, const std::vector<int> &qubits, const bo
 
             // Detect overflow
             if ((j == tensor->_r - 1) && !isOverflow && checkAdderOverflow(g, d, c))
-			{
-				incBDDsBitWidth(tensor->_allBDD);
-				++tensor->_r;
-				isOverflow = 1;
-			}
+            {
+                incBDDsBitWidth(tensor->_allBDD);
+                ++tensor->_r;
+                isOverflow = 1;
+            }
             // Sum
             Cudd_RecursiveDeref(_ddManager, tensor->_allBDD[i][j]);
             tensor->_allBDD[i][j] = Cudd_bddXor(_ddManager, g, d);
@@ -588,16 +586,16 @@ void BDDSystem::Ry_pi_2(Tensor *tensor, const std::vector<int> &qubits, const bo
         }
     }
 
-	if(isOverflow)
-		dropTensorBits(tensor);
+    if(isOverflow)
+        dropTensorBits(tensor);
 }
 
 void BDDSystem::Ry_pi_2_dagger(Tensor *tensor, const std::vector<int> &qubits, const bool fTranspose)
 {
-	assert(qubits.size() == 1);
-	const int targ = qubits.back();
+    assert(qubits.size() == 1);
+    const int targ = qubits.back();
 
-	assert(targ >= 0 && targ < tensor->_rank);
+    assert(targ >= 0 && targ < tensor->_rank);
 
     tensor->_k += 1;
 
@@ -605,8 +603,8 @@ void BDDSystem::Ry_pi_2_dagger(Tensor *tensor, const std::vector<int> &qubits, c
 
     DdNode *g, *d, *c, *tmp, *term1, *term2, *var;
 
-	if(fTranspose) var = Cudd_bddIthVar(_ddManager, targ);
-	else var = Cudd_Not((Cudd_bddIthVar(_ddManager, targ)));
+    if(fTranspose) var = Cudd_bddIthVar(_ddManager, targ);
+    else var = Cudd_Not((Cudd_bddIthVar(_ddManager, targ)));
 
     for (int i = 0; i < _w; i++)
     {
@@ -638,11 +636,11 @@ void BDDSystem::Ry_pi_2_dagger(Tensor *tensor, const std::vector<int> &qubits, c
 
             // Detect overflow
             if ((j == tensor->_r - 1) && !isOverflow && checkAdderOverflow(g, d, c))
-			{
-				incBDDsBitWidth(tensor->_allBDD);
-				++tensor->_r;
-				isOverflow = 1;
-			}
+            {
+                incBDDsBitWidth(tensor->_allBDD);
+                ++tensor->_r;
+                isOverflow = 1;
+            }
             // Sum
             Cudd_RecursiveDeref(_ddManager, tensor->_allBDD[i][j]);
             tensor->_allBDD[i][j] = Cudd_bddXor(_ddManager, g, d);
@@ -679,25 +677,25 @@ void BDDSystem::Ry_pi_2_dagger(Tensor *tensor, const std::vector<int> &qubits, c
         }
     }
 
-	if(isOverflow)
-		dropTensorBits(tensor);
+    if(isOverflow)
+        dropTensorBits(tensor);
 }
 
 void BDDSystem::Phase_shift(Tensor *tensor, const std::vector<int> &qubits, const int phase)
 {
-	assert(qubits.size() == 1);
-	const int targ = qubits.back();
+    assert(qubits.size() == 1);
+    const int targ = qubits.back();
 
-	assert(targ >= 0 && targ < tensor->_rank);
+    assert(targ >= 0 && targ < tensor->_rank);
 
     int nshift = _w / phase;
     int isOverflow = 0;
 
     DdNode *g, *c, *tmp, *term1, *term2;
 
-	auto copy = tensor->_allBDD;
+    auto copy = tensor->_allBDD;
     for (int i = 0; i < _w; i++)
-         for (int j = 0; j < tensor->_r; j++)
+        for (int j = 0; j < tensor->_r; j++)
             Cudd_Ref(copy[i][j]);
 
     for (int i = 0; i < _w; i++)
@@ -724,12 +722,12 @@ void BDDSystem::Phase_shift(Tensor *tensor, const std::vector<int> &qubits, cons
 
                 // Detect overflow
                 if ((j == tensor->_r - 1) && !isOverflow && checkAdderOverflow(g, Cudd_Not(Cudd_ReadOne(_ddManager)), c))
-				{
-					incBDDsBitWidth(tensor->_allBDD);
-					incBDDsBitWidth(copy);
-					++tensor->_r;
-					isOverflow = 1;
-				}
+                {
+                    incBDDsBitWidth(tensor->_allBDD);
+                    incBDDsBitWidth(copy);
+                    ++tensor->_r;
+                    isOverflow = 1;
+                }
 
                 // Plus
                 Cudd_RecursiveDeref(_ddManager, tensor->_allBDD[i][j]);
@@ -772,30 +770,30 @@ void BDDSystem::Phase_shift(Tensor *tensor, const std::vector<int> &qubits, cons
             }
         }
     }
-	
-	for (int i = 0; i < _w; i++)
+
+    for (int i = 0; i < _w; i++)
         for (int j = 0; j < tensor->_r; j++)
             Cudd_RecursiveDeref(_ddManager, copy[i][j]);
 
-	if(isOverflow)
-		dropTensorBits(tensor);
+    if(isOverflow)
+        dropTensorBits(tensor);
 }
 
 void BDDSystem::Phase_shift_dagger(Tensor* tensor, const std::vector<int> &qubits, const int phase)
 {
-	assert(qubits.size() == 1);
-	const int targ = qubits.back();
+    assert(qubits.size() == 1);
+    const int targ = qubits.back();
 
-	assert(targ >= 0 && targ < tensor->_rank);
+    assert(targ >= 0 && targ < tensor->_rank);
 
     int nshift = _w / abs(phase);
     int isOverflow = 0;
 
     DdNode *g, *c, *tmp, *term1, *term2;
 
-	auto copy = tensor->_allBDD;
+    auto copy = tensor->_allBDD;
     for (int i = 0; i < _w; i++)
-         for (int j = 0; j < tensor->_r; j++)
+        for (int j = 0; j < tensor->_r; j++)
             Cudd_Ref(copy[i][j]);
 
     for (int i = 0; i < _w; i++)
@@ -822,12 +820,12 @@ void BDDSystem::Phase_shift_dagger(Tensor* tensor, const std::vector<int> &qubit
 
                 // Detect overflow
                 if ((j == tensor->_r - 1) && !isOverflow && checkAdderOverflow(g, Cudd_Not(Cudd_ReadOne(_ddManager)), c))
-				{
-					incBDDsBitWidth(tensor->_allBDD);
-					incBDDsBitWidth(copy);
-					++tensor->_r;
-					isOverflow = 1;
-				}
+                {
+                    incBDDsBitWidth(tensor->_allBDD);
+                    incBDDsBitWidth(copy);
+                    ++tensor->_r;
+                    isOverflow = 1;
+                }
 
                 // Plus
                 Cudd_RecursiveDeref(_ddManager, tensor->_allBDD[i][j]);
@@ -870,21 +868,21 @@ void BDDSystem::Phase_shift_dagger(Tensor* tensor, const std::vector<int> &qubit
             }
         }
     }
-	
-	for (int i = 0; i < _w; i++)
+
+    for (int i = 0; i < _w; i++)
         for (int j = 0; j < tensor->_r; j++)
             Cudd_RecursiveDeref(_ddManager, copy[i][j]);
 
-	if(isOverflow)
-		dropTensorBits(tensor);
+    if(isOverflow)
+        dropTensorBits(tensor);
 }
 
 void BDDSystem::PauliX(Tensor *tensor, const std::vector<int> &qubits)
 {
-	assert(qubits.size() == 1);
-	const int targ = qubits.back();
+    assert(qubits.size() == 1);
+    const int targ = qubits.back();
 
-	assert(targ >= 0 && targ < tensor->_rank);
+    assert(targ >= 0 && targ < tensor->_rank);
 
     DdNode *tmp, *term1, *term2;
 
@@ -922,10 +920,10 @@ void BDDSystem::PauliX(Tensor *tensor, const std::vector<int> &qubits)
 
 void BDDSystem::PauliY(Tensor *tensor, const std::vector<int> &qubits, const bool fTranspose)
 {
-	assert(qubits.size() == 1);
-	const int targ = qubits.back();
+    assert(qubits.size() == 1);
+    const int targ = qubits.back();
 
-	assert(targ >= 0 && targ < tensor->_rank);
+    assert(targ >= 0 && targ < tensor->_rank);
 
     int nshift = _w / 2;
 
@@ -967,9 +965,9 @@ void BDDSystem::PauliY(Tensor *tensor, const std::vector<int> &qubits, const boo
         }
     }
 
-	auto copy = tensor->_allBDD;
+    auto copy = tensor->_allBDD;
     for (int i = 0; i < _w; i++)
-         for (int j = 0; j < tensor->_r; j++)
+        for (int j = 0; j < tensor->_r; j++)
             Cudd_Ref(copy[i][j]);
 
     for (int i = 0; i < _w; i++)
@@ -1004,12 +1002,12 @@ void BDDSystem::PauliY(Tensor *tensor, const std::vector<int> &qubits, const boo
 
             // Detect overflow
             if ((j == tensor->_r - 1) && !isOverflow && checkAdderOverflow(g, Cudd_Not(Cudd_ReadOne(_ddManager)), c))
-			{
-				incBDDsBitWidth(tensor->_allBDD); 
-				incBDDsBitWidth(copy);
-				++tensor->_r;
-				isOverflow = 1;
-			}
+            {
+                incBDDsBitWidth(tensor->_allBDD); 
+                incBDDsBitWidth(copy);
+                ++tensor->_r;
+                isOverflow = 1;
+            }
 
             // Plus 1
             Cudd_RecursiveDeref(_ddManager, tensor->_allBDD[i][j]);
@@ -1037,19 +1035,19 @@ void BDDSystem::PauliY(Tensor *tensor, const std::vector<int> &qubits, const boo
             }
         }
     }
-	
-	for (int i = 0; i < _w; i++)
+
+    for (int i = 0; i < _w; i++)
         for (int j = 0; j < tensor->_r; j++)
             Cudd_RecursiveDeref(_ddManager, copy[i][j]);
 
-	if(isOverflow)
-		dropTensorBits(tensor);
+    if(isOverflow)
+        dropTensorBits(tensor);
 }
 
 void BDDSystem::PauliZ(Tensor *tensor, const std::vector<int> &qubits)
 {
-	for(const auto ele: qubits)
-		assert(ele >= 0 && ele < tensor->_rank);
+    for(const auto ele: qubits)
+        assert(ele >= 0 && ele < tensor->_rank);
 
     DdNode *c, *tmp, *term1, *term2, *inter, *qubit_and;
 
@@ -1088,13 +1086,13 @@ void BDDSystem::PauliZ(Tensor *tensor, const std::vector<int> &qubits)
             Cudd_RecursiveDeref(_ddManager, term1);
             Cudd_RecursiveDeref(_ddManager, term2);
 
-			// Detect overflow
-			if ((j == tensor->_r - 1) && !isOverflow && checkAdderOverflow(inter, Cudd_Not(Cudd_ReadOne(_ddManager)), c))
-			{
-				incBDDsBitWidth(tensor->_allBDD);
-				++tensor->_r;
-				isOverflow = 1;
-			}
+            // Detect overflow
+            if ((j == tensor->_r - 1) && !isOverflow && checkAdderOverflow(inter, Cudd_Not(Cudd_ReadOne(_ddManager)), c))
+            {
+                incBDDsBitWidth(tensor->_allBDD);
+                ++tensor->_r;
+                isOverflow = 1;
+            }
 
             Cudd_RecursiveDeref(_ddManager, tensor->_allBDD[i][j]);
             // Plus 1
@@ -1107,10 +1105,10 @@ void BDDSystem::PauliZ(Tensor *tensor, const std::vector<int> &qubits)
                 Cudd_Ref(tensor->_allBDD[i][j]);
                 // Carry
                 if (j == tensor->_r - 1)
-				{
+                {
                     Cudd_RecursiveDeref(_ddManager, inter);
-					Cudd_RecursiveDeref(_ddManager, c);
-				}
+                    Cudd_RecursiveDeref(_ddManager, c);
+                }
                 else
                 {
                     tmp = Cudd_bddAnd(_ddManager, inter, c);
@@ -1124,32 +1122,32 @@ void BDDSystem::PauliZ(Tensor *tensor, const std::vector<int> &qubits)
     }
     Cudd_RecursiveDeref(_ddManager, qubit_and);
 
-	if(isOverflow)
-		dropTensorBits(tensor);
+    if(isOverflow)
+        dropTensorBits(tensor);
 }
 
 void BDDSystem::applyGate(const Gate* gate, Tensor *tensor, bool fTranspose)
 {
-	const GateType gateType = gate->getType();
-	const std::vector<int> &qubits = gate->getQubits();
+    const GateType gateType = gate->getType();
+    const std::vector<int> &qubits = gate->getQubits();
 
-	if (gateType == GateType::X) PauliX(tensor, qubits);
-	else if (gateType == GateType::Y) PauliY(tensor, qubits, fTranspose);
-	else if (gateType == GateType::Z) PauliZ(tensor, qubits);
-	else if (gateType == GateType::H) Hadamard(tensor, qubits);
-	else if (gateType == GateType::S) Phase_shift(tensor, qubits, 2);
-	else if (gateType == GateType::SDG) Phase_shift_dagger(tensor, qubits, -2);
-	else if (gateType == GateType::T) Phase_shift(tensor, qubits, 4);
-	else if (gateType == GateType::TDG) Phase_shift_dagger(tensor, qubits, -4);
-	else if (gateType == GateType::RX_PI_2) Rx_pi_2(tensor, qubits);
-	else if (gateType == GateType::RX_PI_2_DG) Rx_pi_2_dagger(tensor, qubits);
-	else if (gateType == GateType::RY_PI_2) Ry_pi_2(tensor, qubits, fTranspose);
-	else if (gateType == GateType::RY_PI_2_DG) Ry_pi_2_dagger(tensor, qubits, fTranspose);
-	else if (gateType == GateType::CX) Toffoli(tensor, qubits);
-	else if (gateType == GateType::CZ) PauliZ(tensor, qubits);
-	else if (gateType == GateType::SWAP) Fredkin(tensor, qubits);
-	else if (gateType == GateType::CSWAP) Fredkin(tensor, qubits);
-	else if (gateType == GateType::CCX) Toffoli(tensor, qubits);
+    if (gateType == GateType::X) PauliX(tensor, qubits);
+    else if (gateType == GateType::Y) PauliY(tensor, qubits, fTranspose);
+    else if (gateType == GateType::Z) PauliZ(tensor, qubits);
+    else if (gateType == GateType::H) Hadamard(tensor, qubits);
+    else if (gateType == GateType::S) Phase_shift(tensor, qubits, 2);
+    else if (gateType == GateType::SDG) Phase_shift_dagger(tensor, qubits, -2);
+    else if (gateType == GateType::T) Phase_shift(tensor, qubits, 4);
+    else if (gateType == GateType::TDG) Phase_shift_dagger(tensor, qubits, -4);
+    else if (gateType == GateType::RX_PI_2) Rx_pi_2(tensor, qubits);
+    else if (gateType == GateType::RX_PI_2_DG) Rx_pi_2_dagger(tensor, qubits);
+    else if (gateType == GateType::RY_PI_2) Ry_pi_2(tensor, qubits, fTranspose);
+    else if (gateType == GateType::RY_PI_2_DG) Ry_pi_2_dagger(tensor, qubits, fTranspose);
+    else if (gateType == GateType::CX) Toffoli(tensor, qubits);
+    else if (gateType == GateType::CZ) PauliZ(tensor, qubits);
+    else if (gateType == GateType::SWAP) Fredkin(tensor, qubits);
+    else if (gateType == GateType::CSWAP) Fredkin(tensor, qubits);
+    else if (gateType == GateType::CCX) Toffoli(tensor, qubits);
 
-	updateMaxNodeCount();
+    updateMaxNodeCount();
 }

@@ -4,27 +4,27 @@
 Checker::Checker
 (
     int nQubits,
-	int fInitBitWidth,
-	int fBitWidthControl,
+    int fInitBitWidth,
+    int fBitWidthControl,
     bool fReorder
 )
 :   
-	BDDSystem
+    BDDSystem
     ( 
-		nQubits,
-		fBitWidthControl,
-        fReorder
+     nQubits,
+     fBitWidthControl,
+     fReorder
     )
 {
-	_U = newTensor(fInitBitWidth, nQubits*2);
-	_V = newTensor(fInitBitWidth, nQubits*2);
+    _U = newTensor(fInitBitWidth, nQubits*2);
+    _V = newTensor(fInitBitWidth, nQubits*2);
 }
 
 // Destructor
 Checker::~Checker()
 {
-	deleteTensor(_U);
-	deleteTensor(_V);
+    deleteTensor(_U);
+    deleteTensor(_V);
 }
 
 void Checker::check(const Circuit *circuitU, const Circuit * circuitV)
@@ -42,18 +42,18 @@ void Checker::check(const Circuit *circuitU, const Circuit * circuitV)
 
   SeeAlso     []
 
-***********************************************************************/
+ ***********************************************************************/
 void Checker::constructUandV(const Circuit *circuitU, const Circuit *circuitV)
 {
     bool fTranspose = false;
 
     initTensorToIdentityMatrix(_U);
-	for(int i = 0; i < circuitU->getGateCount(); ++i)
-		applyGate(circuitU->getGate(i), _U, fTranspose);
+    for(int i = 0; i < circuitU->getGateCount(); ++i)
+        applyGate(circuitU->getGate(i), _U, fTranspose);
 
     initTensorToIdentityMatrix(_V);
-	for(int i = 0; i < circuitV->getGateCount(); ++i)
-		applyGate(circuitV->getGate(i), _V, fTranspose);
+    for(int i = 0; i < circuitV->getGateCount(); ++i)
+        applyGate(circuitV->getGate(i), _V, fTranspose);
 
     bool checkResult = eqCheckTwoTensor(_U, _V);
     if(checkResult)
@@ -74,11 +74,11 @@ void Checker::constructUandV(const Circuit *circuitU, const Circuit *circuitV)
 
   SeeAlso     []
 
-***********************************************************************/
+ ***********************************************************************/
 
 void Checker::initTensorToIdentityMatrix(Tensor *tensor)
 {
-	DdNode *tmp1, *tmp2, *tmp3;
+    DdNode *tmp1, *tmp2, *tmp3;
     int n = tensor->_rank / 2;
 
     for (int i = 0; i < tensor->_r; ++i)
@@ -125,7 +125,7 @@ void Checker::initTensorToIdentityMatrix(Tensor *tensor)
 
   SeeAlso     []
 
-***********************************************************************/
+ ***********************************************************************/
 
 void Checker::addElementToOutputJSON(const std::string key, const std::string value)
 {
@@ -142,7 +142,7 @@ void Checker::addElementToOutputJSON(const std::string key, const std::string va
 
   SeeAlso     []
 
-***********************************************************************/
+ ***********************************************************************/
 
 void Checker::printOutputJSON() const
 {
