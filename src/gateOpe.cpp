@@ -1126,7 +1126,7 @@ void BDDSystem::PauliZ(Tensor *tensor, const std::vector<int> &qubits)
         dropTensorBits(tensor);
 }
 
-void BDDSystem::applyGate(const Gate* gate, Tensor *tensor, bool fTranspose)
+void BDDSystem::applyGate(const Gate* gate, Tensor *tensor, const bool fTranspose)
 {
     const GateType gateType = gate->getType();
     const std::vector<int> &qubits = gate->getQubits();
