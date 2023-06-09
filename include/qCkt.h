@@ -61,17 +61,10 @@ public:
     {
     }
 
-    const Gate *getGate(const int index) const
-    {
-        assert(index < static_cast<int>(_vGates.size()));
-        return _vGates[index];
-    }
+    const Gate *getGate(const int index) const { return _vGates[index]; }
 
     void addGate(const GateType gateType, const std::vector<int> &qubits)
     {
-        for (const auto qubit : qubits)
-            assert(qubit < _nQubits);
-
         _vGates.push_back(new Gate(gateType, qubits));
     }
 

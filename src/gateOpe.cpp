@@ -9,10 +9,6 @@ void BDDSystem::Toffoli(Tensor *tensor, const std::vector<int> &qubits)
     const int targ = qubits.back();
     std::vector<int> cont(qubits.begin(), qubits.end() - 1);
 
-    assert(targ < tensor->_rank && targ >= 0);
-    for (const auto ele : cont)
-        assert(ele >= 0 && ele < tensor->_rank && ele != targ);
-
     g = Cudd_ReadOne(_ddManager);
     Cudd_Ref(g);
     for (int h = cont.size() - 1; h >= 0; h--)
@@ -107,12 +103,6 @@ void BDDSystem::Fredkin(Tensor *tensor, const std::vector<int> &qubits)
     const int swapA = qubits[qubits.size() - 1];
     const int swapB = qubits[qubits.size() - 2];
     std::vector<int> cont(qubits.begin(), qubits.end() - 2);
-
-    assert(swapA >= 0 && swapA < tensor->_rank);
-    assert(swapB >= 0 && swapB < tensor->_rank);
-    assert(swapA != swapB);
-    for (const auto ele : cont)
-        assert(ele >= 0 && ele < tensor->_rank && ele != swapA && ele != swapB);
 
     g = Cudd_ReadOne(_ddManager);
     Cudd_Ref(g);
@@ -1132,9 +1122,6 @@ void BDDSystem::PauliY(Tensor *tensor,
 
 void BDDSystem::PauliZ(Tensor *tensor, const std::vector<int> &qubits)
 {
-    for (const auto ele : qubits)
-        assert(ele >= 0 && ele < tensor->_rank);
-
     DdNode *c, *tmp, *term1, *term2, *inter, *qubit_and;
 
     // Init qubit and
