@@ -18,10 +18,10 @@ int main(int argc, char **argv)
          "0: disable 1: enable default: 1") 
         ("bitwidth_control", po::value<int>()->default_value(0), "bitwidth control when overflowing\n"
          "0: extendBitwidth 1: dropLSB")
-        ("init_bitwidth", po::value<int>()->default_value(32), "initial bitwidth r\n"
-         "default: 32")
         ("circuit1", po::value<std::string>()->implicit_value(""), "circuit1 under equivalence checking")
         ("circuit2", po::value<std::string>()->implicit_value(""), "circuit2 under equivalence checking.")
+        ("init_bitwidth", po::value<int>()->default_value(4), "initial bitwidth r\n"
+         "default: 4")
         ;
 
     po::variables_map vm;
