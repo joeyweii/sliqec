@@ -60,6 +60,44 @@ void Checker::checkByConstructFunctionality(const Circuit *circuitU, const Circu
 
 /**Function*************************************************************
 
+  Synopsis    [Quickly check NEQ Cases by simulating a single basis state.]
+
+  Description []
+
+  SideEffects []
+
+  SeeAlso     []
+
+ ***********************************************************************/
+void Checker::checkBySimulation(const Circuit *circuitU, const Circuit *circuitV)
+{
+    Tensor* _U = newTensor(_nQubits);
+    Tensor* _V = newTensor(_nQubits);
+
+    bool fTranspose = false;
+
+    initTensorToBasisState(_U);
+    for(int i = 0; i < circuitU->getGateCount(); ++i)
+        applyGate(circuitU->getGate(i), _U, fTranspose);
+
+    initTensorToBasisState(_V);
+    for(int i = 0; i < circuitV->getGateCount(); ++i)
+        applyGate(circuitV->getGate(i), _V, fTranspose);
+
+    bool checkResult = eqCheckTwoTensor(_U, _V);
+    if(checkResult)
+        addElementToOutputJSON("equivalence", "probably_equivalent");
+    else
+        addElementToOutputJSON("equivalence", "not_equivalent");
+
+    addElementToOutputJSON("num_nodes", std::to_string(_maxNodeCount));
+
+    deleteTensor(_U);
+    deleteTensor(_V);
+}
+
+/**Function*************************************************************
+
   Synopsis    [Construct the miter of U and V and check if the miter equals to I.]
 
   Description []
@@ -156,6 +194,59 @@ void Checker::initTensorToIdentityMatrix(Tensor *tensor)
                 }
             }
             else
+            {
+                tensor->_allBDD[j][i] = Cudd_Not(Cudd_ReadOne(_ddManager));
+                Cudd_Ref(tensor->_allBDD[j][i]);
+            }
+        }
+    }
+}
+
+/**Function*************************************************************
+
+  Synopsis    [Initialize a basic state vector.]
+
+  Description []
+
+  SideEffects []
+
+  SeeAlso     []
+
+***********************************************************************/
+
+void Checker::initTensorToBasisState(Tensor *tensor)
+{
+    std::vector<bool> basisState(tensor->_rank, false);
+
+	DdNode *var, *tmp;
+
+    for (int i = 0; i < tensor->_r; i++)
+    {
+        if (i == 0)
+        {
+            for (int j = 0; j < _w - 1; j++)
+            {
+                tensor->_allBDD[j][i] = Cudd_Not(Cudd_ReadOne(_ddManager));
+                Cudd_Ref(tensor->_allBDD[j][i]);
+            }
+            tensor->_allBDD[_w - 1][i] = Cudd_ReadOne(_ddManager);
+            Cudd_Ref(tensor->_allBDD[_w - 1][i]);
+            for (int j = tensor->_rank - 1; j >= 0; j--)
+
+            {
+                var = Cudd_bddIthVar(_ddManager, j);
+                if (!basisState[j])
+                    tmp = Cudd_bddAnd(_ddManager, Cudd_Not(var), tensor->_allBDD[_w - 1][i]);
+                else
+                    tmp = Cudd_bddAnd(_ddManager, var, tensor->_allBDD[_w - 1][i]);
+                Cudd_Ref(tmp);
+                Cudd_RecursiveDeref(_ddManager, tensor->_allBDD[_w - 1][i]);
+                tensor->_allBDD[_w - 1][i] = tmp;
+            }
+        }
+        else
+        {
+            for (int j = 0; j < _w; j++)
             {
                 tensor->_allBDD[j][i] = Cudd_Not(Cudd_ReadOne(_ddManager));
                 Cudd_Ref(tensor->_allBDD[j][i]);

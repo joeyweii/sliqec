@@ -20,6 +20,7 @@ class Checker : public BDDSystem
         void printOutputJSON() const;
         void checkByConstructFunctionality(const Circuit *circuitU, const Circuit * circuitV);
         void checkByConstructMiter(Circuit *circuitU, const Circuit *circuitV);
+        void checkBySimulation(const Circuit *circuitU, const Circuit *circuitV);
 
     private:
         int _nQubits;
@@ -27,6 +28,7 @@ class Checker : public BDDSystem
         Tensor *_V;
         std::vector<std::pair<std::string, std::string>> _outputJSON;
         void initTensorToIdentityMatrix(Tensor *tensor);
+        void initTensorToBasisState(Tensor *tensor);
 };
 
 #endif
