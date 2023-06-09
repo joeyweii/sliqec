@@ -11,9 +11,10 @@ cd cudd
 ./configure --enable-dddmp --enable-obj --enable-shared --enable-static
 cd ..
 ```
-Then build the checker, type the command at the root directory.
+Then build the checker with CMake, type the command at the root directory.
 ```
-$ make
+$ mkdir build && cd build
+$ cmake .. && cmake --build .
 ```
 
 ## Execution
@@ -22,7 +23,7 @@ The circuit format being checked is `OpenQASM` used by IBM's [Qiskit](https://gi
 The help message concludes the details for execution:
 
 ```
-$ ./SliQEC --help
+$ ./SliQEC_v2 --help
 Options:
   --help                      produce help message.
   --reorder arg (=1)          allow variable reordering or not.
