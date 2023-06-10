@@ -1,14 +1,5 @@
 #include "qcCheck.h"
 
-// Constructor
-Checker::Checker(int nQubits,
-                 int fInitBitWidth,
-                 int fBitWidthControl,
-                 bool fReorder)
-    : BDDSystem(nQubits, fInitBitWidth, fBitWidthControl, fReorder)
-{
-}
-
 /**Function*************************************************************
 
   Synopsis    [Construct the unitary matrix of U and V and check their

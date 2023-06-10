@@ -7,10 +7,7 @@ class Checker : public BDDSystem
 {
 public:
     // Constructor and Destructor
-    explicit Checker(int nQubits,
-                     int fInitBitWidth,
-                     int fBitWidthMode,
-                     bool fReorder);
+    Checker() = default;
     ~Checker() {}
 
     void addElementToOutputJSON(const std::string key, const std::string value);

@@ -16,10 +16,12 @@ int main(int argc, char **argv)
         "reorder",
         po::value<bool>()->default_value(true),
         "allow variable reordering or not.\n"
-        "0: disable 1: enable default: 1")("bitwidth_control",
-                                           po::value<int>()->default_value(0),
-                                           "bitwidth control when overflowing\n"
-                                           "0: extendBitwidth 1: dropLSB")(
+        "0: disable 1: enable default: 1")(
+        "bitwidth_control",
+        po::value<std::string>()->default_value("extend_bitwidth"),
+        "bitwidth control when overflowing\n"
+        "extend_bitwidth: extend r when overflows\n"
+        "drop_lsb: drop lsb when lsb are all 0.")(
         "init_bitwidth",
         po::value<int>()->default_value(4),
         "initial bitwidth r\n"
@@ -47,9 +49,9 @@ int main(int argc, char **argv)
     }
 
     bool fReorder = vm["reorder"].as<bool>();
-    int fBitWidthControl = vm["bitwidth_control"].as<int>();
     int fInitBitWidth = vm["init_bitwidth"].as<int>();
     std::string fApproach = vm["approach"].as<std::string>();
+    std::string fBitWidthControl = vm["approach"].as<std::string>();
 
     Circuit *circuitU = qasmParser(vm["circuit1"].as<std::string>());
     Circuit *circuitV = qasmParser(vm["circuit2"].as<std::string>());
@@ -64,7 +66,15 @@ int main(int argc, char **argv)
 
     gettimeofday(&tStart, NULL);
 
-    Checker checker(nQubits, fInitBitWidth, fBitWidthControl, fReorder);
+    Checker checker;
+    checker.setInitBitWidth(fInitBitWidth);
+    checker.setAutoReorder(fReorder);
+    if (fBitWidthControl == "extend_bitwidth")
+        checker.setBitWidthControl(BitWidthControl::ExtendBitWidth);
+    else if (fBitWidthControl == "drop_lsb")
+        checker.setBitWidthControl(BitWidthControl::DropLSB);
+    else
+        assert(0 && "Undefined argument bitwidth_control");
 
     if (fApproach == "miter")
         checker.checkByConstructMiter(circuitU, circuitV);
@@ -73,7 +83,7 @@ int main(int argc, char **argv)
     else if (fApproach == "simulation")
         checker.checkBySimulation(circuitU, circuitV);
     else
-        assert(0);
+        assert(0 && "Undefined argument approach");
 
     gettimeofday(&tFinish, NULL);
     elapsedTime = (tFinish.tv_sec - tStart.tv_sec) * 1000.0;

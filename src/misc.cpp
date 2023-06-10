@@ -14,7 +14,7 @@
 
 Tensor *BDDSystem::newTensor(int rank)
 {
-    return new Tensor(_fInitBitWidth, rank);
+    return new Tensor(_initBitWidth, rank);
 }
 
 /**Function*************************************************************
@@ -204,7 +204,7 @@ void BDDSystem::dropTensorLSB(Tensor *tensor)
 
 void BDDSystem::dropTensorBits(Tensor *tensor)
 {
-    if (isTensorLSBZero(tensor) || _bitWidthMode == BitWidthMode::DropLSB)
+    if (isTensorLSBZero(tensor) || _bitWidthControl == BitWidthControl::DropLSB)
         dropTensorLSB(tensor);
 }
 

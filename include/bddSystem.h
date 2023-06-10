@@ -15,11 +15,6 @@
 class Tensor
 {
 public:
-    int _k;
-    int _r;
-    int _rank;
-    std::vector<std::deque<DdNode *>> _allBDD;
-
     Tensor(int r, int rank)
         : _k(0)
         , _r(r)
@@ -28,43 +23,49 @@ public:
               4, std::deque<DdNode *>(_r, nullptr)))
     {
     }
+
+    int _k;
+    int _r;
+    int _rank;
+    std::vector<std::deque<DdNode *>> _allBDD;
 };
 
 class BDDSystem
 {
-protected:
-    enum class BitWidthMode
+public:
+    enum class BitWidthControl
     {
         ExtendBitWidth,
         DropLSB
     };
 
-    explicit BDDSystem(int maxRank,
-                       int fInitBitWidth,
-                       int fBitWidthMode,
-                       bool fReorder)
-        : _ddManager(nullptr)
+    explicit BDDSystem()
+        : _ddManager(Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0))
         , _w(4)
-        , _fInitBitWidth(fInitBitWidth)
+        , _initBitWidth(4)
+        , _bitWidthControl(BitWidthControl::ExtendBitWidth)
     {
-        _ddManager =
-            Cudd_Init(maxRank, maxRank, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
-        switch (fBitWidthMode)
-        {
-        case 1: _bitWidthMode = BitWidthMode::DropLSB; break;
-        default: _bitWidthMode = BitWidthMode::ExtendBitWidth;
-        }
-        if (fReorder) Cudd_AutodynEnable(_ddManager, CUDD_REORDER_SYMM_SIFT);
     }
 
-    virtual ~BDDSystem()
+    void setInitBitWidth(const int initBitWidth)
     {
-        if (Cudd_CheckZeroRef(_ddManager) > 10)
-            std::cout << "\nThe number of referenced nodes = "
-                      << Cudd_CheckZeroRef(_ddManager) << std::endl;
-        Cudd_Quit(_ddManager);
+        _initBitWidth = initBitWidth;
     }
 
+    void setAutoReorder(const bool isReorder)
+    {
+        if (isReorder)
+            Cudd_AutodynEnable(_ddManager, CUDD_REORDER_SYMM_SIFT);
+        else
+            Cudd_AutodynDisable(_ddManager);
+    }
+
+    void setBitWidthControl(BitWidthControl bitWidthControl)
+    {
+        _bitWidthControl = bitWidthControl;
+    }
+
+protected:
     /* gateOpe.cpp */
     void Toffoli(Tensor *tensor, const std::vector<int> &qubits);
     void Fredkin(Tensor *tensor, const std::vector<int> &qubits);
@@ -108,10 +109,11 @@ protected:
     void increaseTensorKByOne(Tensor *tensor);
     bool checkAdderOverflow(DdNode *g, DdNode *h, DdNode *crin) const;
 
-    DdManager *_ddManager;      // BDD manager.
-    int _w;                     // # of integers = 4.
-    int _fInitBitWidth;         // initial bitwidth when new a tensor
-    BitWidthMode _bitWidthMode; // mode of bits' control
+    DdManager *_ddManager;            // BDD manager.
+    int _w;                           // # of integers = 4.
+    int _initBitWidth;                // initial bitwidth when new a tensor
+    BitWidthControl _bitWidthControl; // mode of bits' control
 };
 
+using BitWidthControl = BDDSystem::BitWidthControl;
 #endif
