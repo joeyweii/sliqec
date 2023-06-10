@@ -1,5 +1,4 @@
-#ifndef _CHECKER_H_
-#define _CHECKER_H_
+#pragma once
 
 #include "bddSystem.h"
 
@@ -24,5 +23,3 @@ private:
     void initTensorToIdentityMatrix(Tensor *tensor);
     void initTensorToBasisState(Tensor *tensor);
 };
-
-#endif

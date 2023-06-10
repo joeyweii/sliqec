@@ -1,5 +1,4 @@
-#ifndef _BDDSYSTEN_H_
-#define _BDDSYSTEM_H_
+#pragma once
 
 #include <iostream>
 #include <cstdlib>
@@ -116,4 +115,3 @@ protected:
 };
 
 using BitWidthControl = BDDSystem::BitWidthControl;
-#endif

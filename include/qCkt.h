@@ -1,5 +1,4 @@
-#ifndef _QUANTUM_CIRCUIT_H_
-#define _QUANTUM_CIRCUIT_H_
+#pragma once
 
 #include <vector>
 
@@ -107,4 +106,3 @@ private:
     std::vector<Gate *> _vGates;
     int _nQubits;
 };
-#endif
