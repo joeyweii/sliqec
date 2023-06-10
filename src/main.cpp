@@ -5,8 +5,6 @@
 #include "qcCheck.h"
 #include "memMeasure.h"
 
-extern Circuit *qasmParser(const std::string &filename);
-
 int main(int argc, char **argv)
 {
     // Program options
@@ -53,8 +51,8 @@ int main(int argc, char **argv)
     std::string fApproach = vm["approach"].as<std::string>();
     std::string fBitWidthControl = vm["approach"].as<std::string>();
 
-    Circuit *circuitU = qasmParser(vm["circuit1"].as<std::string>());
-    Circuit *circuitV = qasmParser(vm["circuit2"].as<std::string>());
+    Circuit *circuitU = parseQASM(vm["circuit1"].as<std::string>());
+    Circuit *circuitV = parseQASM(vm["circuit2"].as<std::string>());
 
     int nQubits = circuitU->getNumberQubits();
     assert(circuitV->getNumberQubits() == nQubits);

@@ -19,7 +19,7 @@
 
  ***********************************************************************/
 
-Circuit *qasmParser(const std::string &filename)
+Circuit *parseQASM(const std::string &filename)
 {
 
     // Parse QASM files

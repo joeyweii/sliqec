@@ -1,5 +1,7 @@
 #pragma once
 
+#include "qCkt.h"
+
 #include <iostream>
 #include <cstdlib>
 #include <string>
@@ -9,7 +11,6 @@
 #include "../cudd/cudd/cudd.h"
 #include "../cudd/cudd/cuddInt.h"
 #include "../cudd/util/util.h"
-#include "qCkt.h"
 
 class Tensor
 {

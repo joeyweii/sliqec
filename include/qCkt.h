@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 
 enum class GateType
 {
@@ -106,3 +107,5 @@ private:
     std::vector<Gate *> _vGates;
     int _nQubits;
 };
+
+Circuit *parseQASM(const std::string &filename);
