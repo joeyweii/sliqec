@@ -6,7 +6,6 @@ Checker::Checker(int nQubits,
                  int fBitWidthControl,
                  bool fReorder)
     : BDDSystem(nQubits, fInitBitWidth, fBitWidthControl, fReorder)
-    , _nQubits(nQubits)
 {
 }
 
@@ -25,8 +24,11 @@ Checker::Checker(int nQubits,
 void Checker::checkByConstructFunctionality(const Circuit *circuitU,
                                             const Circuit *circuitV)
 {
-    Tensor *_U = newTensor(_nQubits * 2);
-    Tensor *_V = newTensor(_nQubits * 2);
+    int nQubits = circuitU->getNumberQubits();
+    assert(circuitV->getNumberQubits == nQubits);
+
+    Tensor *_U = newTensor(nQubits * 2);
+    Tensor *_V = newTensor(nQubits * 2);
 
     bool fTranspose = false;
 
@@ -64,8 +66,11 @@ void Checker::checkByConstructFunctionality(const Circuit *circuitU,
 void Checker::checkBySimulation(const Circuit *circuitU,
                                 const Circuit *circuitV)
 {
-    Tensor *_U = newTensor(_nQubits);
-    Tensor *_V = newTensor(_nQubits);
+    int nQubits = circuitU->getNumberQubits();
+    assert(circuitV->getNumberQubits == nQubits);
+
+    Tensor *_U = newTensor(nQubits);
+    Tensor *_V = newTensor(nQubits);
 
     bool fTranspose = false;
 
@@ -103,11 +108,14 @@ void Checker::checkBySimulation(const Circuit *circuitU,
  ***********************************************************************/
 void Checker::checkByConstructMiter(Circuit *circuitU, const Circuit *circuitV)
 {
-    circuitU->daggerAllGate();
-    circuitU->liftAllGateQubits(_nQubits);
+    int nQubits = circuitU->getNumberQubits();
+    assert(circuitV->getNumberQubits == nQubits);
 
-    Tensor *miter = newTensor(_nQubits * 2);
-    Tensor *identityMatrix = newTensor(_nQubits * 2);
+    circuitU->daggerAllGate();
+    circuitU->liftAllGateQubits(nQubits);
+
+    Tensor *miter = newTensor(nQubits * 2);
+    Tensor *identityMatrix = newTensor(nQubits * 2);
     initTensorToIdentityMatrix(miter);
     initTensorToIdentityMatrix(identityMatrix);
 
@@ -140,7 +148,7 @@ void Checker::checkByConstructMiter(Circuit *circuitU, const Circuit *circuitV)
     addElementToOutputJSON("num_nodes", std::to_string(_maxNodeCount));
 
     circuitU->daggerAllGate();
-    circuitU->unliftAllGateQubits(_nQubits);
+    circuitU->unliftAllGateQubits(nQubits);
     deleteTensor(miter);
     deleteTensor(identityMatrix);
 }
