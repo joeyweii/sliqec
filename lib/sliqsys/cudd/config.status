@@ -393,7 +393,7 @@ on `(hostname || uname -n) 2>/dev/null | sed 1q`
 "
 
 # Files that config.status was made for.
-config_files=" Makefile dddmp/exp/test1.sh dddmp/exp/test2.sh dddmp/exp/test3.sh dddmp/exp/test4.sh dddmp/exp/test5.sh dddmp/exp/test6.sh dddmp/exp/test7.sh"
+config_files=" doc/cudd.tex Makefile dddmp/exp/test1.sh dddmp/exp/test2.sh dddmp/exp/test3.sh dddmp/exp/test4.sh dddmp/exp/test5.sh dddmp/exp/test6.sh dddmp/exp/test7.sh"
 config_headers=" config.h"
 config_commands=" depfiles libtool"
 
@@ -437,11 +437,11 @@ Copyright (C) 2012 Free Software Foundation, Inc.
 This config.status script is free software; the Free Software Foundation
 gives unlimited permission to copy, distribute and modify it."
 
-ac_pwd='/raid4/userr/r10/r10092/SliQEC/SliQTens/cudd'
+ac_pwd='/home/b06901100/ec/SliQEC_v2/lib/sliqsys/cudd'
 srcdir='.'
 INSTALL='/usr/bin/install -c'
 MKDIR_P='/usr/bin/mkdir -p'
-AWK='mawk'
+AWK='gawk'
 test -n "$AWK" || AWK=awk
 # The default lists apply if the user does not specify any file.
 ac_need_defaults=:
@@ -676,7 +676,7 @@ finish_cmds='PATH="\$PATH:/sbin" ldconfig -n $libdir'
 finish_eval=''
 hardcode_into_libs='yes'
 sys_lib_search_path_spec='/usr/lib/gcc/x86_64-linux-gnu/9 /usr/lib/x86_64-linux-gnu /usr/lib /lib/x86_64-linux-gnu /lib '
-sys_lib_dlsearch_path_spec='/lib /usr/lib /usr/lib/x86_64-linux-gnu/libfakeroot /usr/local/lib /usr/local/lib/x86_64-linux-gnu /lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu '
+sys_lib_dlsearch_path_spec='/lib /usr/lib /usr/lib/x86_64-linux-gnu/libfakeroot /usr/local/lib/i386-linux-gnu /lib/i386-linux-gnu /usr/lib/i386-linux-gnu /usr/local/lib/i686-linux-gnu /lib/i686-linux-gnu /usr/lib/i686-linux-gnu /usr/local/lib /usr/local/lib/x86_64-linux-gnu /lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu /lib32 /usr/lib32 '
 hardcode_action='immediate'
 enable_dlopen='unknown'
 enable_dlopen_self='unknown'
@@ -887,10 +887,10 @@ S["MINGW64_FALSE"]=""
 S["MINGW64_TRUE"]="#"
 S["HAVE_PTHREADS_FALSE"]="#"
 S["HAVE_PTHREADS_TRUE"]=""
-S["HAVE_PDFLATEX_FALSE"]=""
-S["HAVE_PDFLATEX_TRUE"]="#"
-S["MAKEINDEX"]=""
-S["PDFLATEX"]=""
+S["HAVE_PDFLATEX_FALSE"]="#"
+S["HAVE_PDFLATEX_TRUE"]=""
+S["MAKEINDEX"]="makeindex"
+S["PDFLATEX"]="pdflatex"
 S["HAVE_DOXYGEN_FALSE"]=""
 S["HAVE_DOXYGEN_TRUE"]="#"
 S["DOXYGEN"]=""
@@ -955,17 +955,17 @@ S["am__tar"]="$${TAR-tar} chof - \"$$tardir\""
 S["AMTAR"]="$${TAR-tar}"
 S["am__leading_dot"]="."
 S["SET_MAKE"]=""
-S["AWK"]="mawk"
+S["AWK"]="gawk"
 S["mkdir_p"]="$(MKDIR_P)"
 S["MKDIR_P"]="/usr/bin/mkdir -p"
 S["INSTALL_STRIP_PROGRAM"]="$(install_sh) -c -s"
 S["STRIP"]="strip"
-S["install_sh"]="${SHELL} /raid4/userr/r10/r10092/SliQEC/SliQTens/cudd/build-aux/install-sh"
-S["MAKEINFO"]="${SHELL} /raid4/userr/r10/r10092/SliQEC/SliQTens/cudd/build-aux/missing makeinfo"
-S["AUTOHEADER"]="${SHELL} /raid4/userr/r10/r10092/SliQEC/SliQTens/cudd/build-aux/missing autoheader"
-S["AUTOMAKE"]="${SHELL} /raid4/userr/r10/r10092/SliQEC/SliQTens/cudd/build-aux/missing automake-1.16"
-S["AUTOCONF"]="${SHELL} /raid4/userr/r10/r10092/SliQEC/SliQTens/cudd/build-aux/missing autoconf"
-S["ACLOCAL"]="${SHELL} /raid4/userr/r10/r10092/SliQEC/SliQTens/cudd/build-aux/missing aclocal-1.16"
+S["install_sh"]="${SHELL} /home/b06901100/ec/SliQEC_v2/lib/sliqsys/cudd/build-aux/install-sh"
+S["MAKEINFO"]="${SHELL} /home/b06901100/ec/SliQEC_v2/lib/sliqsys/cudd/build-aux/missing makeinfo"
+S["AUTOHEADER"]="${SHELL} /home/b06901100/ec/SliQEC_v2/lib/sliqsys/cudd/build-aux/missing autoheader"
+S["AUTOMAKE"]="${SHELL} /home/b06901100/ec/SliQEC_v2/lib/sliqsys/cudd/build-aux/missing automake-1.16"
+S["AUTOCONF"]="${SHELL} /home/b06901100/ec/SliQEC_v2/lib/sliqsys/cudd/build-aux/missing autoconf"
+S["ACLOCAL"]="${SHELL} /home/b06901100/ec/SliQEC_v2/lib/sliqsys/cudd/build-aux/missing aclocal-1.16"
 S["VERSION"]="3.0.0"
 S["PACKAGE"]="cudd"
 S["CYGPATH_W"]="echo"
