@@ -1,7 +1,7 @@
-# SliQEC_v2 - A BDD-based Quantum Circuit Equivalence Checker
+# SliQEC - A BDD-based Quantum Circuit Equivalence Checker
 
 ## Introduction
-**SliQEC_v2** is a BDD-based quantum circuit equivalence checker implemented in C/C++ on top of [CUDD](http://web.mit.edu/sage/export/tmp/y/usr/share/doc/polybori/cudd/cuddIntro.html) package.
+**SliQEC** is a BDD-based quantum circuit equivalence checker implemented in C/C++ on top of [CUDD](http://web.mit.edu/sage/export/tmp/y/usr/share/doc/polybori/cudd/cuddIntro.html) package.
 
 
 ## Build
@@ -23,7 +23,7 @@ The circuit format being checked is `OpenQASM` used by IBM's [Qiskit](https://gi
 The help message concludes the details for execution:
 
 ```
-$ ./SliQEC_v2 --help
+$ ./SliQEC --help
 Options:
   --help                      produce help message.
   --reorder arg (=1)          allow variable reordering or not.

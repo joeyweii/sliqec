@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.20)
 
 project(
-    SliQEC_v2
+    SliQEC
     LANGUAGES CXX
-    DESCRIPTION "SliQEC_v2 - A BDD-based Quantum Circuit Equivalence Checker")
+    DESCRIPTION "SliQEC - A BDD-based Quantum Circuit Equivalence Checker")
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
