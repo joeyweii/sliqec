@@ -1253,6 +1253,4 @@ void BDDSystem::applyGate(const Gate *gate,
         Fredkin(tensor, qubits);
     else if (gateType == GateType::CCX)
         Toffoli(tensor, qubits);
-
-    updateMaxNodeCount();
 }

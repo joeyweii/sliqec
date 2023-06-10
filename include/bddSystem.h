@@ -46,7 +46,6 @@ protected:
         : _ddManager(nullptr)
         , _w(4)
         , _fInitBitWidth(fInitBitWidth)
-        , _maxNodeCount(0)
     {
         _ddManager =
             Cudd_Init(maxRank, maxRank, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0);
@@ -108,13 +107,11 @@ protected:
     void dropTensorBits(Tensor *tensor);
     void increaseTensorKByOne(Tensor *tensor);
     bool checkAdderOverflow(DdNode *g, DdNode *h, DdNode *crin) const;
-    void updateMaxNodeCount();
 
-    DdManager *_ddManager;       // BDD manager.
-    int _w;                      // # of integers = 4.
-    int _fInitBitWidth;          // initial bitwidth when new a tensor
-    unsigned long _maxNodeCount; // node count.
-    BitWidthMode _bitWidthMode;  // mode of bits' control
+    DdManager *_ddManager;      // BDD manager.
+    int _w;                     // # of integers = 4.
+    int _fInitBitWidth;         // initial bitwidth when new a tensor
+    BitWidthMode _bitWidthMode; // mode of bits' control
 };
 
 #endif

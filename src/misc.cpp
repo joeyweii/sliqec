@@ -344,21 +344,3 @@ bool BDDSystem::checkAdderOverflow(DdNode *g, DdNode *h, DdNode *carryIn) const
 
     return overflow;
 }
-
-/**Function*************************************************************
-
-  Synopsis    [Update max #nodes.]
-
-  Description []
-
-  SideEffects []
-
-  SeeAlso     []
-
- ***********************************************************************/
-void BDDSystem::updateMaxNodeCount()
-{
-    _maxNodeCount =
-        std::max(_maxNodeCount,
-                 static_cast<unsigned long>(Cudd_ReadNodeCount(_ddManager)));
-}

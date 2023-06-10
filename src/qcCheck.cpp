@@ -46,7 +46,8 @@ void Checker::checkByConstructFunctionality(const Circuit *circuitU,
     else
         addElementToOutputJSON("equivalence", "not_equivalent");
 
-    addElementToOutputJSON("num_nodes", std::to_string(_maxNodeCount));
+    addElementToOutputJSON("max_num_nodes",
+                           std::to_string(Cudd_ReadPeakNodeCount(_ddManager)));
 
     deleteTensor(_U);
     deleteTensor(_V);
@@ -88,7 +89,8 @@ void Checker::checkBySimulation(const Circuit *circuitU,
     else
         addElementToOutputJSON("equivalence", "not_equivalent");
 
-    addElementToOutputJSON("num_nodes", std::to_string(_maxNodeCount));
+    addElementToOutputJSON("max_num_nodes",
+                           std::to_string(Cudd_ReadPeakNodeCount(_ddManager)));
 
     deleteTensor(_U);
     deleteTensor(_V);
@@ -145,7 +147,8 @@ void Checker::checkByConstructMiter(Circuit *circuitU, const Circuit *circuitV)
     else
         addElementToOutputJSON("equivalence", "not_equivalent");
 
-    addElementToOutputJSON("num_nodes", std::to_string(_maxNodeCount));
+    addElementToOutputJSON("max_num_nodes",
+                           std::to_string(Cudd_ReadPeakNodeCount(_ddManager)));
 
     circuitU->daggerAllGate();
     circuitU->unliftAllGateQubits(nQubits);
