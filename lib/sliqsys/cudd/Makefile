@@ -87,8 +87,8 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-build_triplet = x86_64-unknown-linux-gnu
-host_triplet = x86_64-unknown-linux-gnu
+build_triplet = arm-apple-darwin20.6.0
+host_triplet = arm-apple-darwin20.6.0
 am__append_1 = dddmp/dddmp.h
 am__append_2 = cplusplus/cuddObj.hh
 check_PROGRAMS = cudd/testcudd$(EXEEXT) cudd/testextra$(EXEEXT) \
@@ -104,8 +104,8 @@ am__append_4 = $(dddmp_sources)
 #am__append_5 = dddmp/libdddmp.la
 am__append_6 = $(cplusplus_sources)
 #am__append_7 = cplusplus/libobj.la
-am__append_8 = doc/cudd.pdf doc/cudd.aux doc/cudd.idx doc/cudd.ilg doc/cudd.ind \
-  doc/cudd.log doc/cudd.out doc/cudd.toc
+#am__append_8 = doc/cudd.pdf doc/cudd.aux doc/cudd.idx doc/cudd.ilg doc/cudd.ind \
+#  doc/cudd.log doc/cudd.out doc/cudd.toc
 
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -768,15 +768,15 @@ distuninstallcheck_listfiles = find . -type f -print
 am__distuninstallcheck_listfiles = $(distuninstallcheck_listfiles) \
   | sed 's|^\./|$(prefix)/|' | grep -v '$(infodir)/dir$$'
 distcleancheck_listfiles = find . -type f -print
-ACLOCAL = ${SHELL} /home/b06901100/ec/SliQEC_v2/lib/sliqsys/cudd/build-aux/missing aclocal-1.16
+ACLOCAL = ${SHELL} /Users/chunyu/Lab/Code/SliQEC_v2/lib/sliqsys/cudd/build-aux/missing aclocal-1.16
 AMTAR = $${TAR-tar}
 AM_DEFAULT_VERBOSITY = 1
 AR = ar
 AS = as
-AUTOCONF = ${SHELL} /home/b06901100/ec/SliQEC_v2/lib/sliqsys/cudd/build-aux/missing autoconf
-AUTOHEADER = ${SHELL} /home/b06901100/ec/SliQEC_v2/lib/sliqsys/cudd/build-aux/missing autoheader
-AUTOMAKE = ${SHELL} /home/b06901100/ec/SliQEC_v2/lib/sliqsys/cudd/build-aux/missing automake-1.16
-AWK = gawk
+AUTOCONF = ${SHELL} /Users/chunyu/Lab/Code/SliQEC_v2/lib/sliqsys/cudd/build-aux/missing autoconf
+AUTOHEADER = ${SHELL} /Users/chunyu/Lab/Code/SliQEC_v2/lib/sliqsys/cudd/build-aux/missing autoheader
+AUTOMAKE = ${SHELL} /Users/chunyu/Lab/Code/SliQEC_v2/lib/sliqsys/cudd/build-aux/missing automake-1.16
+AWK = awk
 CC = gcc
 CCDEPMODE = depmode=gcc3
 CFLAGS = -Wall -Wextra -g -O3
@@ -791,10 +791,10 @@ DEFS = -DHAVE_CONFIG_H
 DEPDIR = .deps
 DLLTOOL = false
 DOXYGEN = 
-DSYMUTIL = 
+DSYMUTIL = dsymutil
 DUMPBIN = 
-ECHO_C = 
-ECHO_N = -n
+ECHO_C = \c
+ECHO_N = 
 ECHO_T = 
 EGREP = /usr/bin/grep -E
 EXEEXT = 
@@ -805,24 +805,24 @@ INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
-LD = /usr/bin/ld -m elf_x86_64
+LD = /Library/Developer/CommandLineTools/usr/bin/ld
 LDFLAGS = 
 LIBOBJS = 
-LIBS = -lm 
+LIBS = 
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
-LIPO = 
+LIPO = lipo
 LN_S = ln -s
 LTLIBOBJS = 
-MAKEINDEX = makeindex
-MAKEINFO = ${SHELL} /home/b06901100/ec/SliQEC_v2/lib/sliqsys/cudd/build-aux/missing makeinfo
+MAKEINDEX = 
+MAKEINFO = ${SHELL} /Users/chunyu/Lab/Code/SliQEC_v2/lib/sliqsys/cudd/build-aux/missing makeinfo
 MANIFEST_TOOL = :
-MKDIR_P = /usr/bin/mkdir -p
+MKDIR_P = /opt/homebrew/bin/gmkdir -p
 NM = /usr/bin/nm -B
-NMEDIT = 
+NMEDIT = nmedit
 OBJDUMP = objdump
 OBJEXT = o
-OTOOL = 
-OTOOL64 = 
+OTOOL = otool
+OTOOL64 = :
 PACKAGE = cudd
 PACKAGE_BUGREPORT = Fabio@Colorado.EDU
 PACKAGE_NAME = cudd
@@ -831,17 +831,17 @@ PACKAGE_TARNAME = cudd
 PACKAGE_URL = 
 PACKAGE_VERSION = 3.0.0
 PATH_SEPARATOR = :
-PDFLATEX = pdflatex
+PDFLATEX = 
 RANLIB = ranlib
 SED = /usr/bin/sed
 SET_MAKE = 
-SHELL = /bin/bash
+SHELL = /bin/sh
 STRIP = strip
 VERSION = 3.0.0
-abs_builddir = /home/b06901100/ec/SliQEC_v2/lib/sliqsys/cudd
-abs_srcdir = /home/b06901100/ec/SliQEC_v2/lib/sliqsys/cudd
-abs_top_builddir = /home/b06901100/ec/SliQEC_v2/lib/sliqsys/cudd
-abs_top_srcdir = /home/b06901100/ec/SliQEC_v2/lib/sliqsys/cudd
+abs_builddir = /Users/chunyu/Lab/Code/SliQEC_v2/lib/sliqsys/cudd
+abs_srcdir = /Users/chunyu/Lab/Code/SliQEC_v2/lib/sliqsys/cudd
+abs_top_builddir = /Users/chunyu/Lab/Code/SliQEC_v2/lib/sliqsys/cudd
+abs_top_srcdir = /Users/chunyu/Lab/Code/SliQEC_v2/lib/sliqsys/cudd
 ac_ct_AR = ar
 ac_ct_CC = gcc
 ac_ct_CXX = g++
@@ -852,26 +852,26 @@ am__quote =
 am__tar = $${TAR-tar} chof - "$$tardir"
 am__untar = $${TAR-tar} xf -
 bindir = ${exec_prefix}/bin
-build = x86_64-unknown-linux-gnu
+build = arm-apple-darwin20.6.0
 build_alias = 
-build_cpu = x86_64
-build_os = linux-gnu
-build_vendor = unknown
+build_cpu = arm
+build_os = darwin20.6.0
+build_vendor = apple
 builddir = .
 datadir = ${datarootdir}
 datarootdir = ${prefix}/share
 docdir = ${datarootdir}/doc/${PACKAGE_TARNAME}
 dvidir = ${docdir}
 exec_prefix = ${prefix}
-host = x86_64-unknown-linux-gnu
+host = arm-apple-darwin20.6.0
 host_alias = 
-host_cpu = x86_64
-host_os = linux-gnu
-host_vendor = unknown
+host_cpu = arm
+host_os = darwin20.6.0
+host_vendor = apple
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/b06901100/ec/SliQEC_v2/lib/sliqsys/cudd/build-aux/install-sh
+install_sh = ${SHELL} /Users/chunyu/Lab/Code/SliQEC_v2/lib/sliqsys/cudd/build-aux/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -1097,8 +1097,8 @@ distclean-hdr:
 	-rm -f config.h stamp-h1
 #Doxyfile: $(top_builddir)/config.status $(srcdir)/Doxyfile.in
 #	cd $(top_builddir) && $(SHELL) ./config.status $@
-doc/cudd.tex: $(top_builddir)/config.status $(top_srcdir)/doc/cudd.tex.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
+#doc/cudd.tex: $(top_builddir)/config.status $(top_srcdir)/doc/cudd.tex.in
+#	cd $(top_builddir) && $(SHELL) ./config.status $@
 dddmp/exp/test1.sh: $(top_builddir)/config.status $(top_srcdir)/dddmp/exp/test1.sh.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 dddmp/exp/test2.sh: $(top_builddir)/config.status $(top_srcdir)/dddmp/exp/test2.sh.in
@@ -3491,14 +3491,14 @@ nanotrav/test_ntrv.test: nanotrav/test_ntrv.test.in Makefile
 	$(do_subst) $< > $@
 	chmod +x $@
 
-doc/cudd.pdf: doc/cudd.tex $(top_srcdir)/doc/phase.pdf
-	@if $(AM_V_P); then dest='2>&1'; else dest='> /dev/null 2>&1'; fi; \
-	cd doc && eval "$(PDFLATEX) cudd $${dest}" && \
-	eval "$(MAKEINDEX) cudd $${dest}" && \
-	eval "$(PDFLATEX) cudd $${dest}" && \
-	eval "$(PDFLATEX) cudd $${dest}"
+#doc/cudd.pdf: doc/cudd.tex $(top_srcdir)/doc/phase.pdf
+#	@if $(AM_V_P); then dest='2>&1'; else dest='> /dev/null 2>&1'; fi; \
+#	cd doc && eval "$(PDFLATEX) cudd $${dest}" && \
+#	eval "$(MAKEINDEX) cudd $${dest}" && \
+#	eval "$(PDFLATEX) cudd $${dest}" && \
+#	eval "$(PDFLATEX) cudd $${dest}"
 
-#doc/cudd.pdf:
+doc/cudd.pdf:
 
 dist-hook:
 	rm -rf `find $(distdir) -name .svn`

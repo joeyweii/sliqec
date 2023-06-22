@@ -135,7 +135,7 @@
 #define SIZEOF_LONG 8
 
 /* The size of `long double', as computed by sizeof. */
-#define SIZEOF_LONG_DOUBLE 16
+#define SIZEOF_LONG_DOUBLE 8
 
 /* The size of `void *', as computed by sizeof. */
 #define SIZEOF_VOID_P 8

@@ -17,5 +17,4 @@ target_include_directories(${PROJECT_NAME}
 target_compile_options(${PROJECT_NAME} PUBLIC -Wall -O3 -DNDEBUG)
 
 target_link_libraries(${PROJECT_NAME} 
-    ${PROJECT_SOURCE_DIR}/cudd/cudd/.libs/libcudd.a 
-    -lboost_program_options)
+    ${PROJECT_SOURCE_DIR}/cudd/cudd/.libs/libcudd.a)

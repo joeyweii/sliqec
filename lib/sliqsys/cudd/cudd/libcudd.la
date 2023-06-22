@@ -5,16 +5,16 @@
 # It is necessary for linking the library.
 
 # The name that we can dlopen(3).
-dlname='libcudd-3.0.0.so.0'
+dlname='libcudd-3.0.0.0.dylib'
 
 # Names of this library.
-library_names='libcudd-3.0.0.so.0.0.0 libcudd-3.0.0.so.0 libcudd.so'
+library_names='libcudd-3.0.0.0.dylib libcudd.dylib'
 
 # The name of the static archive.
 old_library='libcudd.a'
 
 # Linker flags that can not go in dependency_libs.
-inherited_linker_flags=''
+inherited_linker_flags=' '
 
 # Libraries that this one depends upon.
 dependency_libs=''

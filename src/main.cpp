@@ -1,58 +1,50 @@
-#include <boost/program_options.hpp>
+#include <string>
 #include <sys/time.h>
 #include <fstream>
 
 #include "qcCheck.h"
 #include "memMeasure.h"
 
-int main(int argc, char **argv)
-{
+int main(int argc, char *argv[]) {
     // Program options
-    namespace po = boost::program_options;
-    po::options_description description("Options");
-    description.add_options()("help", "produce help message.")(
-        "reorder",
-        po::value<bool>()->default_value(true),
-        "allow variable reordering or not.\n"
-        "0: disable 1: enable default: 1")(
-        "bitwidth_control",
-        po::value<std::string>()->default_value("extend_bitwidth"),
-        "bitwidth control when overflowing\n"
-        "extend_bitwidth: extend r when overflows\n"
-        "drop_lsb: drop lsb when lsb are all 0.")(
-        "init_bitwidth",
-        po::value<int>()->default_value(4),
-        "initial bitwidth r\n"
-        "default: 4")("circuit1",
-                      po::value<std::string>()->implicit_value(""),
-                      "circuit1 under equivalence checking.\n")(
-        "circuit2",
-        po::value<std::string>()->implicit_value(""),
-        "circuit2 under equivalence checking.\n")(
-        "approach",
-        po::value<std::string>()->default_value("miter"),
-        "approach of equivalence checking\n"
-        "miter: construct miter\n"
-        "construct: construct fucntionality\n"
-        "simulation: simulation\n");
+    bool fReorder = true;
+    int fInitBitWidth = 4;
+    std::string fApproach = "miter";
+    std::string fBitWidthControl = "extend_bitwidth";
+    std::string circuit1Name, circuit2Name;
 
-    po::variables_map vm;
-    po::store(po::parse_command_line(argc, argv, description), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || argc == 1)
-    {
-        std::cout << description;
-        return 0;
+    for (int i = 1; i < argc;) {
+        if (std::string(argv[i]) == "--circuit1") {
+            circuit1Name = std::string(argv[i + 1]);
+            i += 2;
+        } else if (std::string(argv[i]) == "--circuit2") {
+            circuit2Name = std::string(argv[i + 1]);
+            i += 2;
+        } else if (std::string(argv[i]) == "--reorder") {
+            if (std::string(argv[i + 1]) == "0")
+                fReorder = false;
+            else if (std::string(argv[i + 1]) == "1")
+                fReorder = true;
+            else
+                assert(0 && "Parse -reorder option fail");
+            i += 2;
+        } else if (std::string(argv[i]) == "--init_bitwidth") {
+            fInitBitWidth = std::stoi(std::string(argv[i + 1]));
+            i += 2;
+        } else if (std::string(argv[i]) == "--approach") {
+            fApproach = std::string(argv[i + 1]);
+            i += 2;
+        } else if (std::string(argv[i]) == "--bitwidth_control") {
+            fBitWidthControl = std::string(argv[i + 1]);
+            i += 2;
+        } else
+            assert(0 && "Undefined options.");
     }
 
-    bool fReorder = vm["reorder"].as<bool>();
-    int fInitBitWidth = vm["init_bitwidth"].as<int>();
-    std::string fApproach = vm["approach"].as<std::string>();
-    std::string fBitWidthControl = vm["approach"].as<std::string>();
-
-    Circuit *circuitU = parseQASM(vm["circuit1"].as<std::string>());
-    Circuit *circuitV = parseQASM(vm["circuit2"].as<std::string>());
+    assert(circuit1Name != "" && "Circuit1 not specified.");
+    assert(circuit2Name != "" && "Circuit2 not specified.");
+    Circuit *circuitU = parseQASM(circuit1Name);
+    Circuit *circuitV = parseQASM(circuit2Name);
 
     int nQubits = circuitU->getNumberQubits();
     assert(circuitV->getNumberQubits() == nQubits);
@@ -72,7 +64,7 @@ int main(int argc, char **argv)
     else if (fBitWidthControl == "drop_lsb")
         checker.setBitWidthControl(BitWidthControl::DropLSB);
     else
-        assert(0 && "Undefined argument bitwidth_control");
+        assert(0 && "Undefined argument --bitwidth_control");
 
     if (fApproach == "miter")
         checker.checkByConstructMiter(circuitU, circuitV);
@@ -81,7 +73,7 @@ int main(int argc, char **argv)
     else if (fApproach == "simulation")
         checker.checkBySimulation(circuitU, circuitV);
     else
-        assert(0 && "Undefined argument approach");
+        assert(0 && "Undefined argument --approach");
 
     gettimeofday(&tFinish, NULL);
     elapsedTime = (tFinish.tv_sec - tStart.tv_sec) * 1000.0;

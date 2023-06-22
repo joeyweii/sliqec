@@ -2,3 +2,7 @@
 SliQEC_v2
 *.lo
 *.swp
+*.Plo
+.cache/
+build/
+.*/
