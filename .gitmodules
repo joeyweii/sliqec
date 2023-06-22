@@ -1,0 +1,3 @@
+[submodule "lib/sliqsys"]
+	path = lib/sliqsys
+	url = https://github.com/joeyweii/sliqsys.git
