@@ -12,8 +12,7 @@
 
  ***********************************************************************/
 
-Tensor *BDDSystem::newTensor(int rank)
-{
+Tensor *BDDSystem::newTensor(int rank) {
     return new Tensor(_initBitWidth, rank);
 }
 
@@ -29,18 +28,15 @@ Tensor *BDDSystem::newTensor(int rank)
 
  ***********************************************************************/
 
-void BDDSystem::deleteTensor(Tensor *tensor)
-{
+void BDDSystem::deleteTensor(Tensor *tensor) {
     for (int i = 0; i < _w; i++)
         for (int j = 0, end_j = tensor->_r; j < end_j; j++)
             Cudd_RecursiveDeref(_ddManager, tensor->_allBDD[i][j]);
 }
 
-static void bitVectorPlus1(int length, int *reg)
-{
+static void bitVectorPlus1(int length, int *reg) {
     int one = 1, carry = 0;
-    for (int i = 0; i < length; ++i)
-    {
+    for (int i = 0; i < length; ++i) {
         carry = reg[i] & one;
         reg[i] = reg[i] ^ one;
 
@@ -60,8 +56,7 @@ static void bitVectorPlus1(int length, int *reg)
 
  ***********************************************************************/
 
-void BDDSystem::printTensor(Tensor *tensor) const
-{
+void BDDSystem::printTensor(Tensor *tensor) const {
     const double PI =
         3.14159265358979323846264338327950288419716939937510582097494459230781640628620899;
     const double oneRoot2 = 1 / sqrt(2);
@@ -76,8 +71,7 @@ void BDDSystem::printTensor(Tensor *tensor) const
     std::cout << "k: " << tensor->_k << '\n';
     std::cout << "rank: " << tensor->_rank << '\n';
     std::cout << '[';
-    for (unsigned long long i = 0; i < nEntries; ++i)
-    {
+    for (unsigned long long i = 0; i < nEntries; ++i) {
         re = 0;
         im = 0;
 
@@ -109,8 +103,7 @@ void BDDSystem::printTensor(Tensor *tensor) const
             std::cout << "\"" + std::to_string(im) + "i\"";
         else if (im == 0)
             std::cout << "\"" + std::to_string(re) + "\"";
-        else
-        {
+        else {
             if (im < 0)
                 std::cout << "\"" + std::to_string(re) + std::to_string(im) +
                                  "i\"";
@@ -135,10 +128,8 @@ void BDDSystem::printTensor(Tensor *tensor) const
   SeeAlso     []
 
  ***********************************************************************/
-void BDDSystem::incBDDsBitWidth(std::vector<std::deque<DdNode *>> &allBDD)
-{
-    for (int j = 0; j < _w; ++j)
-    {
+void BDDSystem::incBDDsBitWidth(std::vector<std::deque<DdNode *>> &allBDD) {
+    for (int j = 0; j < _w; ++j) {
         Cudd_Ref(allBDD[j].back());
         allBDD[j].push_back(allBDD[j].back());
     }
@@ -156,12 +147,9 @@ void BDDSystem::incBDDsBitWidth(std::vector<std::deque<DdNode *>> &allBDD)
 
  ***********************************************************************/
 
-bool BDDSystem::isTensorLSBZero(Tensor *tensor) const
-{
-    for (int i = 0; i < _w; ++i)
-    {
-        if (tensor->_allBDD[i].front() != Cudd_Not(Cudd_ReadOne(_ddManager)))
-        {
+bool BDDSystem::isTensorLSBZero(Tensor *tensor) const {
+    for (int i = 0; i < _w; ++i) {
+        if (tensor->_allBDD[i].front() != Cudd_Not(Cudd_ReadOne(_ddManager))) {
             return false;
         }
     }
@@ -179,10 +167,8 @@ bool BDDSystem::isTensorLSBZero(Tensor *tensor) const
   SeeAlso     []
 
  ***********************************************************************/
-void BDDSystem::dropTensorLSB(Tensor *tensor)
-{
-    for (int j = 0; j < _w; ++j)
-    {
+void BDDSystem::dropTensorLSB(Tensor *tensor) {
+    for (int j = 0; j < _w; ++j) {
         Cudd_RecursiveDeref(_ddManager, tensor->_allBDD[j].front());
         tensor->_allBDD[j].pop_front();
     }
@@ -202,8 +188,7 @@ void BDDSystem::dropTensorLSB(Tensor *tensor)
 
  ***********************************************************************/
 
-void BDDSystem::dropTensorBits(Tensor *tensor)
-{
+void BDDSystem::dropTensorBits(Tensor *tensor) {
     if (isTensorLSBZero(tensor) || _bitWidthControl == BitWidthControl::DropLSB)
         dropTensorLSB(tensor);
 }
@@ -219,8 +204,7 @@ void BDDSystem::dropTensorBits(Tensor *tensor)
   SeeAlso     []
 
  ***********************************************************************/
-void BDDSystem::increaseTensorKByOne(Tensor *tensor)
-{
+void BDDSystem::increaseTensorKByOne(Tensor *tensor) {
     DdNode *carry = nullptr, *g = nullptr, *d = nullptr, *tmp = nullptr,
            *tmp2 = nullptr, *tmp3 = nullptr;
     bool isOverflow = false;
@@ -232,10 +216,8 @@ void BDDSystem::increaseTensorKByOne(Tensor *tensor)
 
     ++tensor->_k;
 
-    for (int i = 0; i < _w; ++i)
-    {
-        switch (i)
-        {
+    for (int i = 0; i < _w; ++i) {
+        switch (i) {
         case 0: carry = Cudd_ReadOne(_ddManager); break;
         case 1: carry = Cudd_Not(Cudd_ReadOne(_ddManager)); break;
         case 2: carry = Cudd_Not(Cudd_ReadOne(_ddManager)); break;
@@ -243,10 +225,8 @@ void BDDSystem::increaseTensorKByOne(Tensor *tensor)
         }
         Cudd_Ref(carry);
 
-        for (int j = 0; j < tensor->_r; ++j)
-        {
-            switch (i)
-            {
+        for (int j = 0; j < tensor->_r; ++j) {
+            switch (i) {
             case 0:
                 g = copyAllBDD[1][j];
                 d = Cudd_Not(copyAllBDD[3][j]);
@@ -266,8 +246,7 @@ void BDDSystem::increaseTensorKByOne(Tensor *tensor)
             }
 
             if ((j == tensor->_r - 1) && !isOverflow &&
-                checkAdderOverflow(g, d, carry))
-            {
+                checkAdderOverflow(g, d, carry)) {
                 incBDDsBitWidth(tensor->_allBDD);
                 incBDDsBitWidth(copyAllBDD);
                 ++tensor->_r;
@@ -285,8 +264,7 @@ void BDDSystem::increaseTensorKByOne(Tensor *tensor)
             // Carry
             if (j == tensor->_r - 1)
                 Cudd_RecursiveDeref(_ddManager, carry);
-            else
-            {
+            else {
                 tmp = Cudd_bddAnd(_ddManager, g, d);
                 Cudd_Ref(tmp);
                 tmp2 = Cudd_bddOr(_ddManager, g, d);
@@ -319,8 +297,9 @@ void BDDSystem::increaseTensorKByOne(Tensor *tensor)
   SeeAlso     []
 
  ***********************************************************************/
-bool BDDSystem::checkAdderOverflow(DdNode *g, DdNode *h, DdNode *carryIn) const
-{
+bool BDDSystem::checkAdderOverflow(DdNode *g,
+                                   DdNode *h,
+                                   DdNode *carryIn) const {
     DdNode *tmp, *dd1, *dd2;
     bool overflow;
 

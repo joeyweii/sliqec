@@ -2,8 +2,7 @@
 
 #include "bddSystem.h"
 
-class Checker : public BDDSystem
-{
+class Checker : public BDDSystem {
 public:
     // Constructor and Destructor
     Checker() = default;

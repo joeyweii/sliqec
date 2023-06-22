@@ -13,8 +13,7 @@
 
  ***********************************************************************/
 void Checker::checkByConstructFunctionality(const Circuit *circuitU,
-                                            const Circuit *circuitV)
-{
+                                            const Circuit *circuitV) {
     int nQubits = circuitU->getNumberQubits();
     assert(circuitV->getNumberQubits == nQubits);
 
@@ -56,8 +55,7 @@ void Checker::checkByConstructFunctionality(const Circuit *circuitU,
 
  ***********************************************************************/
 void Checker::checkBySimulation(const Circuit *circuitU,
-                                const Circuit *circuitV)
-{
+                                const Circuit *circuitV) {
     int nQubits = circuitU->getNumberQubits();
     assert(circuitV->getNumberQubits == nQubits);
 
@@ -99,8 +97,8 @@ void Checker::checkBySimulation(const Circuit *circuitU,
   SeeAlso     []
 
  ***********************************************************************/
-void Checker::checkByConstructMiter(Circuit *circuitU, const Circuit *circuitV)
-{
+void Checker::checkByConstructMiter(Circuit *circuitU,
+                                    const Circuit *circuitV) {
     int nQubits = circuitU->getNumberQubits();
     assert(circuitV->getNumberQubits == nQubits);
 
@@ -115,19 +113,14 @@ void Checker::checkByConstructMiter(Circuit *circuitU, const Circuit *circuitV)
     int sizeU = circuitU->getGateCount(), sizeV = circuitV->getGateCount();
     int idxU = 0, idxV = 0;
 
-    while (idxU < sizeU || idxV < sizeV)
-    {
-        if (idxU < sizeU)
-        {
+    while (idxU < sizeU || idxV < sizeV) {
+        if (idxU < sizeU) {
             applyGate(circuitU->getGate(idxU), miter, true);
             ++idxU;
         }
 
-        int count = 0;
-        while (idxV < sizeV && idxV * sizeU < idxU * sizeV)
-        {
+        while (idxV < sizeV && idxV * sizeU < idxU * sizeV) {
             applyGate(circuitV->getGate(idxV), miter, false);
-            ++count;
             ++idxV;
         }
     }
@@ -159,21 +152,16 @@ void Checker::checkByConstructMiter(Circuit *circuitU, const Circuit *circuitV)
 
  ***********************************************************************/
 
-void Checker::initTensorToIdentityMatrix(Tensor *tensor)
-{
+void Checker::initTensorToIdentityMatrix(Tensor *tensor) {
     DdNode *tmp1, *tmp2, *tmp3;
     int n = tensor->_rank / 2;
 
-    for (int i = 0; i < tensor->_r; ++i)
-    {
-        for (int j = 0; j < _w; ++j)
-        {
-            if (i == 0 && j == _w - 1)
-            {
+    for (int i = 0; i < tensor->_r; ++i) {
+        for (int j = 0; j < _w; ++j) {
+            if (i == 0 && j == _w - 1) {
                 tensor->_allBDD[j][i] = Cudd_ReadOne(_ddManager);
                 Cudd_Ref(tensor->_allBDD[j][i]);
-                for (int k = 0; k < n; ++k)
-                {
+                for (int k = 0; k < n; ++k) {
                     tmp1 = Cudd_bddAnd(
                         _ddManager,
                         Cudd_Not(Cudd_bddIthVar(_ddManager, k)),
@@ -193,9 +181,7 @@ void Checker::initTensorToIdentityMatrix(Tensor *tensor)
                     Cudd_RecursiveDeref(_ddManager, tmp3);
                     tensor->_allBDD[j][i] = tmp1;
                 }
-            }
-            else
-            {
+            } else {
                 tensor->_allBDD[j][i] = Cudd_Not(Cudd_ReadOne(_ddManager));
                 Cudd_Ref(tensor->_allBDD[j][i]);
             }
@@ -215,18 +201,14 @@ void Checker::initTensorToIdentityMatrix(Tensor *tensor)
 
 ***********************************************************************/
 
-void Checker::initTensorToBasisState(Tensor *tensor)
-{
+void Checker::initTensorToBasisState(Tensor *tensor) {
     std::vector<bool> basisState(tensor->_rank, false);
 
     DdNode *var, *tmp;
 
-    for (int i = 0; i < tensor->_r; i++)
-    {
-        if (i == 0)
-        {
-            for (int j = 0; j < _w - 1; j++)
-            {
+    for (int i = 0; i < tensor->_r; i++) {
+        if (i == 0) {
+            for (int j = 0; j < _w - 1; j++) {
                 tensor->_allBDD[j][i] = Cudd_Not(Cudd_ReadOne(_ddManager));
                 Cudd_Ref(tensor->_allBDD[j][i]);
             }
@@ -246,11 +228,8 @@ void Checker::initTensorToBasisState(Tensor *tensor)
                 Cudd_RecursiveDeref(_ddManager, tensor->_allBDD[_w - 1][i]);
                 tensor->_allBDD[_w - 1][i] = tmp;
             }
-        }
-        else
-        {
-            for (int j = 0; j < _w; j++)
-            {
+        } else {
+            for (int j = 0; j < _w; j++) {
                 tensor->_allBDD[j][i] = Cudd_Not(Cudd_ReadOne(_ddManager));
                 Cudd_Ref(tensor->_allBDD[j][i]);
             }
@@ -271,8 +250,7 @@ void Checker::initTensorToBasisState(Tensor *tensor)
  ***********************************************************************/
 
 void Checker::addElementToOutputJSON(const std::string key,
-                                     const std::string value)
-{
+                                     const std::string value) {
     _outputJSON.push_back(std::make_pair(key, value));
 }
 
@@ -288,11 +266,9 @@ void Checker::addElementToOutputJSON(const std::string key,
 
  ***********************************************************************/
 
-void Checker::printOutputJSON() const
-{
+void Checker::printOutputJSON() const {
     std::cout << "{\n";
-    for (size_t i = 0; i < _outputJSON.size(); ++i)
-    {
+    for (size_t i = 0; i < _outputJSON.size(); ++i) {
         auto &p = _outputJSON[i];
         std::cout << "  ";
         std::cout << "\"" << p.first << "\"";

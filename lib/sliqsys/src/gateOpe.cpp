@@ -2,8 +2,7 @@
 
 // Apply gate on the quantum data.
 
-void BDDSystem::Toffoli(Tensor *tensor, const std::vector<int> &qubits)
-{
+void BDDSystem::Toffoli(Tensor *tensor, const std::vector<int> &qubits) {
     DdNode *term1 = nullptr, *term2 = nullptr, *term3 = nullptr, *g = nullptr,
            *tmp = nullptr;
 
@@ -12,18 +11,15 @@ void BDDSystem::Toffoli(Tensor *tensor, const std::vector<int> &qubits)
 
     g = Cudd_ReadOne(_ddManager);
     Cudd_Ref(g);
-    for (int h = cont.size() - 1; h >= 0; h--)
-    {
+    for (int h = cont.size() - 1; h >= 0; h--) {
         tmp = Cudd_bddAnd(_ddManager, Cudd_bddIthVar(_ddManager, cont[h]), g);
         Cudd_Ref(tmp);
         Cudd_RecursiveDeref(_ddManager, g);
         g = tmp;
     }
 
-    for (int i = 0; i < _w; i++)
-    {
-        for (int j = 0; j < tensor->_r; j++)
-        {
+    for (int i = 0; i < _w; i++) {
+        for (int j = 0; j < tensor->_r; j++) {
             // term1
             term1 = Cudd_ReadOne(_ddManager);
             Cudd_Ref(term1);
@@ -96,8 +92,7 @@ void BDDSystem::Toffoli(Tensor *tensor, const std::vector<int> &qubits)
     Cudd_RecursiveDeref(_ddManager, g);
 }
 
-void BDDSystem::Fredkin(Tensor *tensor, const std::vector<int> &qubits)
-{
+void BDDSystem::Fredkin(Tensor *tensor, const std::vector<int> &qubits) {
     DdNode *term1, *term2, *term3, *g, *tmp, *tmp0;
 
     assert(qubits.size() >= 2);
@@ -107,8 +102,7 @@ void BDDSystem::Fredkin(Tensor *tensor, const std::vector<int> &qubits)
 
     g = Cudd_ReadOne(_ddManager);
     Cudd_Ref(g);
-    for (int h = cont.size() - 1; h >= 0; h--)
-    {
+    for (int h = cont.size() - 1; h >= 0; h--) {
         tmp = Cudd_bddAnd(_ddManager, Cudd_bddIthVar(_ddManager, cont[h]), g);
         Cudd_Ref(tmp);
         Cudd_RecursiveDeref(_ddManager, g);
@@ -117,8 +111,7 @@ void BDDSystem::Fredkin(Tensor *tensor, const std::vector<int> &qubits)
 
     for (int i = 0; i < _w; i++) // F = allBDD[i][j]
     {
-        for (int j = 0; j < tensor->_r; j++)
-        {
+        for (int j = 0; j < tensor->_r; j++) {
             // term1
             term1 = Cudd_ReadOne(_ddManager);
             Cudd_Ref(term1);
@@ -220,8 +213,7 @@ void BDDSystem::Fredkin(Tensor *tensor, const std::vector<int> &qubits)
     Cudd_RecursiveDeref(_ddManager, g);
 }
 
-void BDDSystem::Hadamard(Tensor *tensor, const std::vector<int> &qubits)
-{
+void BDDSystem::Hadamard(Tensor *tensor, const std::vector<int> &qubits) {
     assert(qubits.size() == 1);
     const int targ = qubits.back();
 
@@ -234,16 +226,14 @@ void BDDSystem::Hadamard(Tensor *tensor, const std::vector<int> &qubits)
 
     int isOverflow = 0;
 
-    for (int i = 0; i < _w; i++)
-    {
+    for (int i = 0; i < _w; i++) {
         c = Cudd_ReadOne(_ddManager);
         Cudd_Ref(c);
         tmp = Cudd_bddAnd(_ddManager, c, Cudd_bddIthVar(_ddManager, targ));
         Cudd_Ref(tmp);
         Cudd_RecursiveDeref(_ddManager, c);
         c = tmp;
-        for (int j = 0; j < tensor->_r; j++)
-        {
+        for (int j = 0; j < tensor->_r; j++) {
             // G
             g = Cudd_Cofactor(_ddManager,
                               tensor->_allBDD[i][j],
@@ -274,8 +264,7 @@ void BDDSystem::Hadamard(Tensor *tensor, const std::vector<int> &qubits)
 
             // Detect overflow
             if ((j == tensor->_r - 1) && !isOverflow &&
-                checkAdderOverflow(g, d, c))
-            {
+                checkAdderOverflow(g, d, c)) {
                 incBDDsBitWidth(tensor->_allBDD);
                 ++tensor->_r;
                 isOverflow = 1;
@@ -291,14 +280,11 @@ void BDDSystem::Hadamard(Tensor *tensor, const std::vector<int> &qubits)
             tensor->_allBDD[i][j] = tmp;
 
             // Carry
-            if (j == tensor->_r - 1)
-            {
+            if (j == tensor->_r - 1) {
                 Cudd_RecursiveDeref(_ddManager, c);
                 Cudd_RecursiveDeref(_ddManager, g);
                 Cudd_RecursiveDeref(_ddManager, d);
-            }
-            else
-            {
+            } else {
                 term1 = Cudd_bddAnd(_ddManager, g, d);
                 Cudd_Ref(term1);
                 term2 = Cudd_bddOr(_ddManager, g, d);
@@ -321,8 +307,7 @@ void BDDSystem::Hadamard(Tensor *tensor, const std::vector<int> &qubits)
     if (isOverflow) dropTensorBits(tensor);
 }
 
-void BDDSystem::Rx_pi_2(Tensor *tensor, const std::vector<int> &qubits)
-{
+void BDDSystem::Rx_pi_2(Tensor *tensor, const std::vector<int> &qubits) {
     assert(qubits.size() == 1);
     const int targ = qubits.back();
     assert(targ >= 0 && targ < tensor->_rank);
@@ -339,16 +324,14 @@ void BDDSystem::Rx_pi_2(Tensor *tensor, const std::vector<int> &qubits)
         for (int j = 0; j < tensor->_r; j++)
             Cudd_Ref(copy[i][j]);
 
-    for (int i = 0; i < _w; i++)
-    {
+    for (int i = 0; i < _w; i++) {
         // Init C
         if (i < nshift)
             c = Cudd_ReadOne(_ddManager);
         else
             c = Cudd_Not(Cudd_ReadOne(_ddManager));
         Cudd_Ref(c);
-        for (int j = 0; j < tensor->_r; j++)
-        {
+        for (int j = 0; j < tensor->_r; j++) {
             // D
             term1 = Cudd_Cofactor(_ddManager,
                                   copy[(i + nshift) % _w][j],
@@ -377,8 +360,7 @@ void BDDSystem::Rx_pi_2(Tensor *tensor, const std::vector<int> &qubits)
             Cudd_RecursiveDeref(_ddManager, term2);
             // Detect overflow
             if ((j == tensor->_r - 1) && !isOverflow &&
-                checkAdderOverflow(copy[i][j], d, c))
-            {
+                checkAdderOverflow(copy[i][j], d, c)) {
                 incBDDsBitWidth(tensor->_allBDD);
                 incBDDsBitWidth(copy);
                 ++tensor->_r;
@@ -393,13 +375,10 @@ void BDDSystem::Rx_pi_2(Tensor *tensor, const std::vector<int> &qubits)
             Cudd_RecursiveDeref(_ddManager, tensor->_allBDD[i][j]);
             tensor->_allBDD[i][j] = tmp;
             // Carry
-            if (j == tensor->_r - 1)
-            {
+            if (j == tensor->_r - 1) {
                 Cudd_RecursiveDeref(_ddManager, c);
                 Cudd_RecursiveDeref(_ddManager, d);
-            }
-            else
-            {
+            } else {
                 term1 = Cudd_bddAnd(_ddManager, copy[i][j], d);
                 Cudd_Ref(term1);
                 term2 = Cudd_bddOr(_ddManager, copy[i][j], d);
@@ -425,8 +404,7 @@ void BDDSystem::Rx_pi_2(Tensor *tensor, const std::vector<int> &qubits)
     if (isOverflow) dropTensorBits(tensor);
 }
 
-void BDDSystem::Rx_pi_2_dagger(Tensor *tensor, const std::vector<int> &qubits)
-{
+void BDDSystem::Rx_pi_2_dagger(Tensor *tensor, const std::vector<int> &qubits) {
     assert(qubits.size() == 1);
     const int targ = qubits.back();
 
@@ -445,16 +423,14 @@ void BDDSystem::Rx_pi_2_dagger(Tensor *tensor, const std::vector<int> &qubits)
         for (int j = 0; j < tensor->_r; j++)
             Cudd_Ref(copy[i][j]);
 
-    for (int i = 0; i < _w; i++)
-    {
+    for (int i = 0; i < _w; i++) {
         // Init C
         if (i < nshift)
             c = Cudd_Not(Cudd_ReadOne(_ddManager));
         else
             c = Cudd_ReadOne(_ddManager);
         Cudd_Ref(c);
-        for (int j = 0; j < tensor->_r; j++)
-        {
+        for (int j = 0; j < tensor->_r; j++) {
             // D
             term1 = Cudd_Cofactor(_ddManager,
                                   copy[(i + nshift) % _w][j],
@@ -483,8 +459,7 @@ void BDDSystem::Rx_pi_2_dagger(Tensor *tensor, const std::vector<int> &qubits)
             Cudd_RecursiveDeref(_ddManager, term2);
             // Detect overflow
             if ((j == tensor->_r - 1) && !isOverflow &&
-                checkAdderOverflow(copy[i][j], d, c))
-            {
+                checkAdderOverflow(copy[i][j], d, c)) {
                 incBDDsBitWidth(tensor->_allBDD);
                 incBDDsBitWidth(copy);
                 ++tensor->_r;
@@ -499,13 +474,10 @@ void BDDSystem::Rx_pi_2_dagger(Tensor *tensor, const std::vector<int> &qubits)
             Cudd_RecursiveDeref(_ddManager, tensor->_allBDD[i][j]);
             tensor->_allBDD[i][j] = tmp;
             // Carry
-            if (j == tensor->_r - 1)
-            {
+            if (j == tensor->_r - 1) {
                 Cudd_RecursiveDeref(_ddManager, c);
                 Cudd_RecursiveDeref(_ddManager, d);
-            }
-            else
-            {
+            } else {
                 term1 = Cudd_bddAnd(_ddManager, copy[i][j], d);
                 Cudd_Ref(term1);
                 term2 = Cudd_bddOr(_ddManager, copy[i][j], d);
@@ -533,8 +505,7 @@ void BDDSystem::Rx_pi_2_dagger(Tensor *tensor, const std::vector<int> &qubits)
 
 void BDDSystem::Ry_pi_2(Tensor *tensor,
                         const std::vector<int> &qubits,
-                        const bool fTranspose)
-{
+                        const bool fTranspose) {
     assert(qubits.size() == 1);
     const int targ = qubits.back();
 
@@ -552,8 +523,7 @@ void BDDSystem::Ry_pi_2(Tensor *tensor,
     else
         var = Cudd_bddIthVar(_ddManager, targ);
 
-    for (int i = 0; i < _w; i++)
-    {
+    for (int i = 0; i < _w; i++) {
         // Init C
         c = Cudd_ReadOne(_ddManager);
         Cudd_Ref(c);
@@ -561,8 +531,7 @@ void BDDSystem::Ry_pi_2(Tensor *tensor,
         Cudd_Ref(tmp);
         Cudd_RecursiveDeref(_ddManager, c);
         c = tmp;
-        for (int j = 0; j < tensor->_r; j++)
-        {
+        for (int j = 0; j < tensor->_r; j++) {
             // G
             g = Cudd_Cofactor(_ddManager, tensor->_allBDD[i][j], Cudd_Not(var));
             Cudd_Ref(g);
@@ -583,8 +552,7 @@ void BDDSystem::Ry_pi_2(Tensor *tensor,
 
             // Detect overflow
             if ((j == tensor->_r - 1) && !isOverflow &&
-                checkAdderOverflow(g, d, c))
-            {
+                checkAdderOverflow(g, d, c)) {
                 incBDDsBitWidth(tensor->_allBDD);
                 ++tensor->_r;
                 isOverflow = 1;
@@ -598,14 +566,11 @@ void BDDSystem::Ry_pi_2(Tensor *tensor,
             Cudd_RecursiveDeref(_ddManager, tensor->_allBDD[i][j]);
             tensor->_allBDD[i][j] = tmp;
             // Carry
-            if (j == tensor->_r - 1)
-            {
+            if (j == tensor->_r - 1) {
                 Cudd_RecursiveDeref(_ddManager, c);
                 Cudd_RecursiveDeref(_ddManager, g);
                 Cudd_RecursiveDeref(_ddManager, d);
-            }
-            else
-            {
+            } else {
                 term1 = Cudd_bddAnd(_ddManager, g, d);
                 Cudd_Ref(term1);
                 term2 = Cudd_bddOr(_ddManager, g, d);
@@ -630,8 +595,7 @@ void BDDSystem::Ry_pi_2(Tensor *tensor,
 
 void BDDSystem::Ry_pi_2_dagger(Tensor *tensor,
                                const std::vector<int> &qubits,
-                               const bool fTranspose)
-{
+                               const bool fTranspose) {
     assert(qubits.size() == 1);
     const int targ = qubits.back();
 
@@ -649,8 +613,7 @@ void BDDSystem::Ry_pi_2_dagger(Tensor *tensor,
     else
         var = Cudd_Not((Cudd_bddIthVar(_ddManager, targ)));
 
-    for (int i = 0; i < _w; i++)
-    {
+    for (int i = 0; i < _w; i++) {
         // Init C
         c = Cudd_ReadOne(_ddManager);
         Cudd_Ref(c);
@@ -658,8 +621,7 @@ void BDDSystem::Ry_pi_2_dagger(Tensor *tensor,
         Cudd_Ref(tmp);
         Cudd_RecursiveDeref(_ddManager, c);
         c = tmp;
-        for (int j = 0; j < tensor->_r; j++)
-        {
+        for (int j = 0; j < tensor->_r; j++) {
             // G
             g = Cudd_Cofactor(_ddManager, tensor->_allBDD[i][j], Cudd_Not(var));
             Cudd_Ref(g);
@@ -680,8 +642,7 @@ void BDDSystem::Ry_pi_2_dagger(Tensor *tensor,
 
             // Detect overflow
             if ((j == tensor->_r - 1) && !isOverflow &&
-                checkAdderOverflow(g, d, c))
-            {
+                checkAdderOverflow(g, d, c)) {
                 incBDDsBitWidth(tensor->_allBDD);
                 ++tensor->_r;
                 isOverflow = 1;
@@ -695,14 +656,11 @@ void BDDSystem::Ry_pi_2_dagger(Tensor *tensor,
             Cudd_RecursiveDeref(_ddManager, tensor->_allBDD[i][j]);
             tensor->_allBDD[i][j] = tmp;
             // Carry
-            if (j == tensor->_r - 1)
-            {
+            if (j == tensor->_r - 1) {
                 Cudd_RecursiveDeref(_ddManager, c);
                 Cudd_RecursiveDeref(_ddManager, g);
                 Cudd_RecursiveDeref(_ddManager, d);
-            }
-            else
-            {
+            } else {
                 term1 = Cudd_bddAnd(_ddManager, g, d);
                 Cudd_Ref(term1);
                 term2 = Cudd_bddOr(_ddManager, g, d);
@@ -727,8 +685,7 @@ void BDDSystem::Ry_pi_2_dagger(Tensor *tensor,
 
 void BDDSystem::Phase_shift(Tensor *tensor,
                             const std::vector<int> &qubits,
-                            const int phase)
-{
+                            const int phase) {
     assert(qubits.size() == 1);
     const int targ = qubits.back();
 
@@ -745,19 +702,15 @@ void BDDSystem::Phase_shift(Tensor *tensor,
         for (int j = 0; j < tensor->_r; j++)
             Cudd_Ref(copy[i][j]);
 
-    for (int i = 0; i < _w; i++)
-    {
+    for (int i = 0; i < _w; i++) {
         // Init C
-        if (i >= _w - nshift)
-        {
+        if (i >= _w - nshift) {
             c = Cudd_bddIthVar(_ddManager, targ);
             Cudd_Ref(c);
         }
 
-        for (int j = 0; j < tensor->_r; j++)
-        {
-            if (i >= _w - nshift)
-            {
+        for (int j = 0; j < tensor->_r; j++) {
+            if (i >= _w - nshift) {
                 term1 = Cudd_bddAnd(_ddManager,
                                     copy[i][j],
                                     Cudd_Not(Cudd_bddIthVar(_ddManager, targ)));
@@ -774,8 +727,7 @@ void BDDSystem::Phase_shift(Tensor *tensor,
                 // Detect overflow
                 if ((j == tensor->_r - 1) && !isOverflow &&
                     checkAdderOverflow(
-                        g, Cudd_Not(Cudd_ReadOne(_ddManager)), c))
-                {
+                        g, Cudd_Not(Cudd_ReadOne(_ddManager)), c)) {
                     incBDDsBitWidth(tensor->_allBDD);
                     incBDDsBitWidth(copy);
                     ++tensor->_r;
@@ -787,19 +739,15 @@ void BDDSystem::Phase_shift(Tensor *tensor,
                 if (c ==
                     Cudd_Not(Cudd_ReadOne(_ddManager))) // must be constant 0
                     tensor->_allBDD[i][j] = g;
-                else
-                {
+                else {
                     // Sum
                     tensor->_allBDD[i][j] = Cudd_bddXor(_ddManager, g, c);
                     Cudd_Ref(tensor->_allBDD[i][j]);
                     // Carry
-                    if (j == tensor->_r - 1)
-                    {
+                    if (j == tensor->_r - 1) {
                         Cudd_RecursiveDeref(_ddManager, g);
                         Cudd_RecursiveDeref(_ddManager, c);
-                    }
-                    else
-                    {
+                    } else {
                         tmp = Cudd_bddAnd(_ddManager, g, c);
                         Cudd_Ref(tmp);
                         Cudd_RecursiveDeref(_ddManager, g);
@@ -807,9 +755,7 @@ void BDDSystem::Phase_shift(Tensor *tensor,
                         c = tmp;
                     }
                 }
-            }
-            else
-            {
+            } else {
                 term1 = Cudd_bddAnd(_ddManager,
                                     copy[i][j],
                                     Cudd_Not(Cudd_bddIthVar(_ddManager, targ)));
@@ -838,8 +784,7 @@ void BDDSystem::Phase_shift(Tensor *tensor,
 
 void BDDSystem::Phase_shift_dagger(Tensor *tensor,
                                    const std::vector<int> &qubits,
-                                   const int phase)
-{
+                                   const int phase) {
     assert(qubits.size() == 1);
     const int targ = qubits.back();
 
@@ -856,19 +801,15 @@ void BDDSystem::Phase_shift_dagger(Tensor *tensor,
         for (int j = 0; j < tensor->_r; j++)
             Cudd_Ref(copy[i][j]);
 
-    for (int i = 0; i < _w; i++)
-    {
+    for (int i = 0; i < _w; i++) {
         // Init C
-        if (i < nshift)
-        {
+        if (i < nshift) {
             c = Cudd_bddIthVar(_ddManager, targ);
             Cudd_Ref(c);
         }
 
-        for (int j = 0; j < tensor->_r; j++)
-        {
-            if (i < nshift)
-            {
+        for (int j = 0; j < tensor->_r; j++) {
+            if (i < nshift) {
                 term1 = Cudd_bddAnd(_ddManager,
                                     copy[i][j],
                                     Cudd_Not(Cudd_bddIthVar(_ddManager, targ)));
@@ -885,8 +826,7 @@ void BDDSystem::Phase_shift_dagger(Tensor *tensor,
                 // Detect overflow
                 if ((j == tensor->_r - 1) && !isOverflow &&
                     checkAdderOverflow(
-                        g, Cudd_Not(Cudd_ReadOne(_ddManager)), c))
-                {
+                        g, Cudd_Not(Cudd_ReadOne(_ddManager)), c)) {
                     incBDDsBitWidth(tensor->_allBDD);
                     incBDDsBitWidth(copy);
                     ++tensor->_r;
@@ -898,19 +838,15 @@ void BDDSystem::Phase_shift_dagger(Tensor *tensor,
                 if (c ==
                     Cudd_Not(Cudd_ReadOne(_ddManager))) // must be constant 0
                     tensor->_allBDD[i][j] = g;
-                else
-                {
+                else {
                     // Sum
                     tensor->_allBDD[i][j] = Cudd_bddXor(_ddManager, g, c);
                     Cudd_Ref(tensor->_allBDD[i][j]);
                     // Carry
-                    if (j == tensor->_r - 1)
-                    {
+                    if (j == tensor->_r - 1) {
                         Cudd_RecursiveDeref(_ddManager, g);
                         Cudd_RecursiveDeref(_ddManager, c);
-                    }
-                    else
-                    {
+                    } else {
                         tmp = Cudd_bddAnd(_ddManager, g, c);
                         Cudd_Ref(tmp);
                         Cudd_RecursiveDeref(_ddManager, g);
@@ -918,9 +854,7 @@ void BDDSystem::Phase_shift_dagger(Tensor *tensor,
                         c = tmp;
                     }
                 }
-            }
-            else
-            {
+            } else {
                 term1 = Cudd_bddAnd(_ddManager,
                                     copy[i][j],
                                     Cudd_Not(Cudd_bddIthVar(_ddManager, targ)));
@@ -947,8 +881,7 @@ void BDDSystem::Phase_shift_dagger(Tensor *tensor,
     if (isOverflow) dropTensorBits(tensor);
 }
 
-void BDDSystem::PauliX(Tensor *tensor, const std::vector<int> &qubits)
-{
+void BDDSystem::PauliX(Tensor *tensor, const std::vector<int> &qubits) {
     assert(qubits.size() == 1);
     const int targ = qubits.back();
 
@@ -958,8 +891,7 @@ void BDDSystem::PauliX(Tensor *tensor, const std::vector<int> &qubits)
 
     for (int i = 0; i < _w; i++) // F = tensor->_allBDD[i][j]
     {
-        for (int j = 0; j < tensor->_r; j++)
-        {
+        for (int j = 0; j < tensor->_r; j++) {
             // term1
             term1 = Cudd_Cofactor(_ddManager,
                                   tensor->_allBDD[i][j],
@@ -996,8 +928,7 @@ void BDDSystem::PauliX(Tensor *tensor, const std::vector<int> &qubits)
 
 void BDDSystem::PauliY(Tensor *tensor,
                        const std::vector<int> &qubits,
-                       const bool fTranspose)
-{
+                       const bool fTranspose) {
     assert(qubits.size() == 1);
     const int targ = qubits.back();
 
@@ -1017,8 +948,7 @@ void BDDSystem::PauliY(Tensor *tensor,
     // PauliX(targ);
     for (int i = 0; i < _w; i++) // F = allBDD[i][j]
     {
-        for (int j = 0; j < tensor->_r; j++)
-        {
+        for (int j = 0; j < tensor->_r; j++) {
             // term1
             term1 =
                 Cudd_Cofactor(_ddManager, tensor->_allBDD[i][j], Cudd_Not(var));
@@ -1052,8 +982,7 @@ void BDDSystem::PauliY(Tensor *tensor,
         for (int j = 0; j < tensor->_r; j++)
             Cudd_Ref(copy[i][j]);
 
-    for (int i = 0; i < _w; i++)
-    {
+    for (int i = 0; i < _w; i++) {
         // Init C
         if (i < nshift)
             c = Cudd_Not(var);
@@ -1061,18 +990,14 @@ void BDDSystem::PauliY(Tensor *tensor,
             c = Cudd_bddAnd(_ddManager, Cudd_ReadOne(_ddManager), var);
         Cudd_Ref(c);
 
-        for (int j = 0; j < tensor->_r; j++)
-        {
-            if (i < nshift)
-            {
+        for (int j = 0; j < tensor->_r; j++) {
+            if (i < nshift) {
                 term1 = Cudd_bddAnd(_ddManager, copy[i + nshift][j], var);
                 Cudd_Ref(term1);
                 term2 = Cudd_bddAnd(
                     _ddManager, Cudd_Not(copy[i + nshift][j]), Cudd_Not(var));
                 Cudd_Ref(term2);
-            }
-            else
-            {
+            } else {
                 term1 =
                     Cudd_bddAnd(_ddManager, Cudd_Not(copy[i - nshift][j]), var);
                 Cudd_Ref(term1);
@@ -1087,8 +1012,7 @@ void BDDSystem::PauliY(Tensor *tensor,
 
             // Detect overflow
             if ((j == tensor->_r - 1) && !isOverflow &&
-                checkAdderOverflow(g, Cudd_Not(Cudd_ReadOne(_ddManager)), c))
-            {
+                checkAdderOverflow(g, Cudd_Not(Cudd_ReadOne(_ddManager)), c)) {
                 incBDDsBitWidth(tensor->_allBDD);
                 incBDDsBitWidth(copy);
                 ++tensor->_r;
@@ -1099,19 +1023,15 @@ void BDDSystem::PauliY(Tensor *tensor,
             Cudd_RecursiveDeref(_ddManager, tensor->_allBDD[i][j]);
             if (c == Cudd_Not(Cudd_ReadOne(_ddManager)))
                 tensor->_allBDD[i][j] = g;
-            else
-            {
+            else {
                 // Sum
                 tensor->_allBDD[i][j] = Cudd_bddXor(_ddManager, g, c);
                 Cudd_Ref(tensor->_allBDD[i][j]);
                 // Carry
-                if (j == tensor->_r - 1)
-                {
+                if (j == tensor->_r - 1) {
                     Cudd_RecursiveDeref(_ddManager, g);
                     Cudd_RecursiveDeref(_ddManager, c);
-                }
-                else
-                {
+                } else {
                     tmp = Cudd_bddAnd(_ddManager, g, c);
                     Cudd_Ref(tmp);
                     Cudd_RecursiveDeref(_ddManager, g);
@@ -1129,16 +1049,14 @@ void BDDSystem::PauliY(Tensor *tensor,
     if (isOverflow) dropTensorBits(tensor);
 }
 
-void BDDSystem::PauliZ(Tensor *tensor, const std::vector<int> &qubits)
-{
+void BDDSystem::PauliZ(Tensor *tensor, const std::vector<int> &qubits) {
     DdNode *c = nullptr, *tmp = nullptr, *term1 = nullptr, *term2 = nullptr,
            *inter = nullptr, *qubit_and = nullptr;
 
     // Init qubit and
     qubit_and = Cudd_ReadOne(_ddManager);
     Cudd_Ref(qubit_and);
-    for (int i = qubits.size() - 1; i >= 0; i--)
-    {
+    for (int i = qubits.size() - 1; i >= 0; i--) {
         tmp = Cudd_bddAnd(
             _ddManager, qubit_and, Cudd_bddIthVar(_ddManager, qubits[i]));
         Cudd_Ref(tmp);
@@ -1146,8 +1064,7 @@ void BDDSystem::PauliZ(Tensor *tensor, const std::vector<int> &qubits)
         qubit_and = tmp;
     }
     int isOverflow = 0;
-    for (int i = 0; i < _w; i++)
-    {
+    for (int i = 0; i < _w; i++) {
         // Init C
         c = Cudd_ReadOne(_ddManager);
         Cudd_Ref(c);
@@ -1155,8 +1072,7 @@ void BDDSystem::PauliZ(Tensor *tensor, const std::vector<int> &qubits)
         Cudd_Ref(tmp);
         Cudd_RecursiveDeref(_ddManager, c);
         c = tmp;
-        for (int j = 0; j < tensor->_r; j++)
-        {
+        for (int j = 0; j < tensor->_r; j++) {
             term1 = Cudd_bddAnd(
                 _ddManager, tensor->_allBDD[i][j], Cudd_Not(qubit_and));
             Cudd_Ref(term1);
@@ -1174,8 +1090,7 @@ void BDDSystem::PauliZ(Tensor *tensor, const std::vector<int> &qubits)
             // Detect overflow
             if ((j == tensor->_r - 1) && !isOverflow &&
                 checkAdderOverflow(
-                    inter, Cudd_Not(Cudd_ReadOne(_ddManager)), c))
-            {
+                    inter, Cudd_Not(Cudd_ReadOne(_ddManager)), c)) {
                 incBDDsBitWidth(tensor->_allBDD);
                 ++tensor->_r;
                 isOverflow = 1;
@@ -1185,19 +1100,15 @@ void BDDSystem::PauliZ(Tensor *tensor, const std::vector<int> &qubits)
             // Plus 1
             if (c == Cudd_Not(Cudd_ReadOne(_ddManager)))
                 tensor->_allBDD[i][j] = inter;
-            else
-            {
+            else {
                 // Sum
                 tensor->_allBDD[i][j] = Cudd_bddXor(_ddManager, inter, c);
                 Cudd_Ref(tensor->_allBDD[i][j]);
                 // Carry
-                if (j == tensor->_r - 1)
-                {
+                if (j == tensor->_r - 1) {
                     Cudd_RecursiveDeref(_ddManager, inter);
                     Cudd_RecursiveDeref(_ddManager, c);
-                }
-                else
-                {
+                } else {
                     tmp = Cudd_bddAnd(_ddManager, inter, c);
                     Cudd_Ref(tmp);
                     Cudd_RecursiveDeref(_ddManager, c);
@@ -1214,8 +1125,7 @@ void BDDSystem::PauliZ(Tensor *tensor, const std::vector<int> &qubits)
 
 void BDDSystem::applyGate(const Gate *gate,
                           Tensor *tensor,
-                          const bool fTranspose)
-{
+                          const bool fTranspose) {
     const GateType gateType = gate->getType();
     const std::vector<int> &qubits = gate->getQubits();
 

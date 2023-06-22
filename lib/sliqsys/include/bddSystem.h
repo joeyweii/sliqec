@@ -12,17 +12,14 @@
 #include "../cudd/cudd/cuddInt.h"
 #include "../cudd/util/util.h"
 
-class Tensor
-{
+class Tensor {
 public:
     Tensor(int r, int rank)
         : _k(0)
         , _r(r)
         , _rank(rank)
         , _allBDD(std::vector<std::deque<DdNode *>>(
-              4, std::deque<DdNode *>(_r, nullptr)))
-    {
-    }
+              4, std::deque<DdNode *>(_r, nullptr))) {}
 
     int _k;
     int _r;
@@ -30,38 +27,28 @@ public:
     std::vector<std::deque<DdNode *>> _allBDD;
 };
 
-class BDDSystem
-{
+class BDDSystem {
 public:
-    enum class BitWidthControl
-    {
-        ExtendBitWidth,
-        DropLSB
-    };
+    enum class BitWidthControl { ExtendBitWidth, DropLSB };
 
     explicit BDDSystem()
         : _ddManager(Cudd_Init(0, 0, CUDD_UNIQUE_SLOTS, CUDD_CACHE_SLOTS, 0))
         , _w(4)
         , _initBitWidth(4)
-        , _bitWidthControl(BitWidthControl::ExtendBitWidth)
-    {
-    }
+        , _bitWidthControl(BitWidthControl::ExtendBitWidth) {}
 
-    void setInitBitWidth(const int initBitWidth)
-    {
+    void setInitBitWidth(const int initBitWidth) {
         _initBitWidth = initBitWidth;
     }
 
-    void setAutoReorder(const bool isReorder)
-    {
+    void setAutoReorder(const bool isReorder) {
         if (isReorder)
             Cudd_AutodynEnable(_ddManager, CUDD_REORDER_SYMM_SIFT);
         else
             Cudd_AutodynDisable(_ddManager);
     }
 
-    void setBitWidthControl(BitWidthControl bitWidthControl)
-    {
+    void setBitWidthControl(BitWidthControl bitWidthControl) {
         _bitWidthControl = bitWidthControl;
     }
 

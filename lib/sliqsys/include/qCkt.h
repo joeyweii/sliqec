@@ -3,8 +3,7 @@
 #include <vector>
 #include <string>
 
-enum class GateType
-{
+enum class GateType {
     X,          // Pauli-X
     Y,          // Pauli-Y
     Z,          // Pauli-Z
@@ -24,26 +23,21 @@ enum class GateType
     CSWAP       // Fredkin
 };
 
-class Gate
-{
+class Gate {
 public:
     explicit Gate(const GateType gateType, const std::vector<int> &qubits)
         : _gateType(gateType)
-        , _qubits(qubits)
-    {
-    }
+        , _qubits(qubits) {}
 
     const GateType getType() const { return _gateType; }
     const std::vector<int> &getQubits() const { return _qubits; }
     void setType(const GateType gateType) { _gateType = gateType; }
-    void liftQubits(int numLift)
-    {
+    void liftQubits(int numLift) {
         for (int &qubit : _qubits)
             qubit += numLift;
     }
 
-    void unliftQubits(int numLift)
-    {
+    void unliftQubits(int numLift) {
         for (int &qubit : _qubits)
             qubit -= numLift;
     }
@@ -53,40 +47,32 @@ private:
     std::vector<int> _qubits;
 };
 
-class Circuit
-{
+class Circuit {
 public:
     explicit Circuit(const int nQubits)
-        : _nQubits(nQubits)
-    {
-    }
+        : _nQubits(nQubits) {}
 
     const Gate *getGate(const int index) const { return _vGates[index]; }
 
-    void addGate(const GateType gateType, const std::vector<int> &qubits)
-    {
+    void addGate(const GateType gateType, const std::vector<int> &qubits) {
         _vGates.push_back(new Gate(gateType, qubits));
     }
 
     int getNumberQubits() const { return _nQubits; }
     int getGateCount() const { return _vGates.size(); }
 
-    void liftAllGateQubits(int numLift)
-    {
+    void liftAllGateQubits(int numLift) {
         for (Gate *gate : _vGates)
             gate->liftQubits(numLift);
     }
 
-    void unliftAllGateQubits(int numLift)
-    {
+    void unliftAllGateQubits(int numLift) {
         for (Gate *gate : _vGates)
             gate->unliftQubits(numLift);
     }
 
-    void daggerAllGate()
-    {
-        for (Gate *gate : _vGates)
-        {
+    void daggerAllGate() {
+        for (Gate *gate : _vGates) {
             const GateType &gateType = gate->getType();
             if (gateType == GateType::S)
                 gate->setType(GateType::SDG);
