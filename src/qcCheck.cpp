@@ -156,12 +156,21 @@ void Checker::initTensorToIdentityMatrix(Tensor *tensor) {
     DdNode *tmp1, *tmp2, *tmp3;
     int n = tensor->_rank / 2;
 
+    int *permut = new int[2 * n];
+    for (int i = 0; i < n; i++) {
+        permut[2 * i] = i;
+        permut[2 * i + 1] = i + n;
+    }
+
+    Cudd_ShuffleHeap(_ddManager, permut);
+    delete[] permut;
+
     for (int i = 0; i < tensor->_r; ++i) {
         for (int j = 0; j < _w; ++j) {
             if (i == 0 && j == _w - 1) {
                 tensor->_allBDD[j][i] = Cudd_ReadOne(_ddManager);
                 Cudd_Ref(tensor->_allBDD[j][i]);
-                for (int k = 0; k < n; ++k) {
+                for (int k = n - 1; k >= 0; --k) {
                     tmp1 = Cudd_bddAnd(
                         _ddManager,
                         Cudd_Not(Cudd_bddIthVar(_ddManager, k)),

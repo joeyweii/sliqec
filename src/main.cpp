@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
 
     gettimeofday(&tStart, NULL);
 
-    Checker checker;
+    Checker checker(nQubits);
     checker.setInitBitWidth(fInitBitWidth);
     checker.setAutoReorder(fReorder);
     if (fBitWidthControl == "extend_bitwidth")

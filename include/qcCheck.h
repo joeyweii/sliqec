@@ -5,7 +5,8 @@
 class Checker : public BDDSystem {
 public:
     // Constructor and Destructor
-    Checker() = default;
+    Checker(int nQubits = 0)
+        : BDDSystem(2 * nQubits) {}
     ~Checker() {}
 
     void addElementToOutputJSON(const std::string key, const std::string value);
