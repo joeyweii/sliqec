@@ -1,18 +1,6 @@
 #include "qcCheck.h"
 #include "cudd.h"
 
-/**Function*************************************************************
-
-  Synopsis    [Construct the unitary matrix of U and V and check their
- equivalence.]
-
-  Description []
-
-  SideEffects []
-
-  SeeAlso     []
-
- ***********************************************************************/
 void Checker::checkByConstructFunctionality(const Circuit *circuitU,
                                             const Circuit *circuitV) {
     int nQubits = circuitU->getNumberQubits();
@@ -44,17 +32,6 @@ void Checker::checkByConstructFunctionality(const Circuit *circuitU,
     deleteTensor(_V);
 }
 
-/**Function*************************************************************
-
-  Synopsis    [Quickly check NEQ Cases by simulating a single basis state.]
-
-  Description []
-
-  SideEffects []
-
-  SeeAlso     []
-
- ***********************************************************************/
 void Checker::checkBySimulation(const Circuit *circuitU,
                                 const Circuit *circuitV) {
     int nQubits = circuitU->getNumberQubits();
@@ -86,18 +63,6 @@ void Checker::checkBySimulation(const Circuit *circuitU,
     deleteTensor(_V);
 }
 
-/**Function*************************************************************
-
-  Synopsis    [Construct the miter of U and V and check if the miter equals to
- I.]
-
-  Description []
-
-  SideEffects []
-
-  SeeAlso     []
-
- ***********************************************************************/
 void Checker::checkByConstructMiter(Circuit *circuitU,
                                     const Circuit *circuitV) {
     int nQubits = circuitU->getNumberQubits();
@@ -140,18 +105,6 @@ void Checker::checkByConstructMiter(Circuit *circuitU,
     deleteTensor(miter);
     deleteTensor(identityMatrix);
 }
-
-/**Function*************************************************************
-
-  Synopsis    [Initialize a identity matrix to a tensor.]
-
-  Description []
-
-  SideEffects []
-
-  SeeAlso     []
-
- ***********************************************************************/
 
 void Checker::initTensorToIdentityMatrix(Tensor *tensor) {
     DdNode *tmp1, *tmp2, *tmp3;
@@ -199,18 +152,6 @@ void Checker::initTensorToIdentityMatrix(Tensor *tensor) {
     }
 }
 
-/**Function*************************************************************
-
-  Synopsis    [Initialize a basic state vector.]
-
-  Description []
-
-  SideEffects []
-
-  SeeAlso     []
-
-***********************************************************************/
-
 void Checker::initTensorToBasisState(Tensor *tensor) {
     std::vector<bool> basisState(tensor->_rank, false);
 
@@ -247,34 +188,10 @@ void Checker::initTensorToBasisState(Tensor *tensor) {
     }
 }
 
-/**Function*************************************************************
-
-  Synopsis    [Add a pair of key/value strings into _outputJSON.]
-
-  Description []
-
-  SideEffects []
-
-  SeeAlso     []
-
- ***********************************************************************/
-
 void Checker::addElementToOutputJSON(const std::string key,
                                      const std::string value) {
     _outputJSON.push_back(std::make_pair(key, value));
 }
-
-/**Function*************************************************************
-
-  Synopsis    [Print the content of _outputJSON to the stdout.]
-
-  Description []
-
-  SideEffects []
-
-  SeeAlso     []
-
- ***********************************************************************/
 
 void Checker::printOutputJSON() const {
     std::cout << "{\n";
