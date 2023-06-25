@@ -22,4 +22,5 @@ private:
 
     void initTensorToIdentityMatrix(Tensor *tensor);
     void initTensorToBasisState(Tensor *tensor);
+    bool checkIsTensorIdentityGlobalPhase(Tensor *tensor, Tensor *identity);
 };

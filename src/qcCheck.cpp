@@ -91,9 +91,10 @@ void Checker::checkByConstructMiter(Circuit *circuitU,
         }
     }
 
-    bool checkResult = eqCheckTwoTensor(miter, identityMatrix);
-    if (checkResult)
+    if (eqCheckTwoTensor(miter, identityMatrix))
         addElementToOutputJSON("equivalence", "equivalent");
+    else if (checkIsTensorIdentityGlobalPhase(miter, identityMatrix))
+        addElementToOutputJSON("equivalence", "equivalent_up_to_global_phase");
     else
         addElementToOutputJSON("equivalence", "not_equivalent");
 
@@ -186,6 +187,21 @@ void Checker::initTensorToBasisState(Tensor *tensor) {
             }
         }
     }
+}
+
+bool Checker::checkIsTensorIdentityGlobalPhase(Tensor *tensor,
+                                               Tensor *identity) {
+    DdNode *identityBDD = identity->_allBDD[_w - 1][0];
+    DdNode *zeroBDD = Cudd_Not(Cudd_ReadOne(_ddManager));
+
+    for (int i = 0; i < _w; ++i) {
+        for (int j = 0; j < tensor->_r; ++j) {
+            DdNode *curBDD = tensor->_allBDD[i][j];
+            if ((curBDD != identityBDD) && (curBDD != zeroBDD)) return false;
+        }
+    }
+
+    return true;
 }
 
 void Checker::addElementToOutputJSON(const std::string key,
