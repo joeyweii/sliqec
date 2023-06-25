@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
     struct timeval tStart, tFinish;
     double elapsedTime;
     double runtime;
-    size_t memPeak;
+    double memPeak;
 
     gettimeofday(&tStart, NULL);
 
@@ -80,7 +80,7 @@ int main(int argc, char *argv[]) {
     elapsedTime += (tFinish.tv_usec - tStart.tv_usec) / 1000.0;
 
     runtime = elapsedTime / 1000.0;
-    memPeak = getPeakRSS();
+    memPeak = getPeakRSS() / 1024.0 / 1024.0 / 1024.0;
 
     checker.addElementToOutputJSON("num_qubits", std::to_string(nQubits));
     checker.addElementToOutputJSON("num_gates_circuit1",
