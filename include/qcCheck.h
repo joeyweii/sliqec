@@ -30,5 +30,6 @@ private:
     void initTensorToBasisState(Tensor *tensor);
     bool checkIsTensorIdentityGlobalPhase(Tensor *tensor);
     DdNode *pickOneNonzeroCommonEntryPosition(Tensor *tensor);
-    Tensor *constructAlphaIdentity(Tensor *tensor, DdNode *minterm);
+    Tensor *constructAlphaIdentity(Tensor *tensor, DdNode *pos);
+    Tensor *constructAlphaBasisState(Tensor *tensor, DdNode *pos, Tensor *basisState);
 };

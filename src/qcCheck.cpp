@@ -64,6 +64,8 @@ void Checker::checkBySimulation(const Circuit *circuitU,
     int nQubits = circuitU->getNumberQubits();
     assert(circuitV->getNumberQubits == nQubits);
 
+    initZeroBDD();
+
     Tensor *U = newTensor(nQubits);
     Tensor *V = newTensor(nQubits);
 
@@ -77,17 +79,39 @@ void Checker::checkBySimulation(const Circuit *circuitU,
     for (int i = 0; i < circuitV->getGateCount(); ++i)
         applyGate(circuitV->getGate(i), V, fTranspose);
 
-    bool checkResult = eqCheckTwoTensor(U, V);
-    if (checkResult)
+    if (eqCheckTwoTensor(U, V)) {
         addElementToOutputJSON("equivalence", "probably_equivalent");
-    else
-        addElementToOutputJSON("equivalence", "not_equivalent");
+        deleteTensor(U);
+        deleteTensor(V);
+    } else {
+        Tensor *basisState = newTensor(nQubits);
+        initTensorToBasisState(basisState);
+
+        DdNode *pos = pickOneNonzeroCommonEntryPosition(U);
+
+        Tensor *Un = constructAlphaBasisState(V, pos, basisState);
+        deleteTensor(V);
+        Tensor *Vn = constructAlphaBasisState(U, pos, basisState);
+        deleteTensor(U);
+        Cudd_RecursiveDeref(_ddManager, pos);
+
+        for (int i = 0; i < circuitU->getGateCount(); ++i)
+            applyGate(circuitU->getGate(i), Un, fTranspose);
+        for (int i = 0; i < circuitV->getGateCount(); ++i)
+            applyGate(circuitV->getGate(i), Vn, fTranspose);
+
+        if (eqCheckTwoTensor(Un, Vn))
+            addElementToOutputJSON("equivalence",
+                                   "probably_equivalent_up_to_global_phase");
+        else
+            addElementToOutputJSON("equivalence", "not_equivalent");
+
+        deleteTensor(Un);
+        deleteTensor(Vn);
+    }
 
     addElementToOutputJSON("max_num_nodes",
                            std::to_string(Cudd_ReadPeakNodeCount(_ddManager)));
-
-    deleteTensor(U);
-    deleteTensor(V);
 }
 
 void Checker::checkByConstructMiter(Circuit *circuitU,
@@ -296,4 +320,25 @@ Tensor *Checker::constructAlphaIdentity(Tensor *tensor, DdNode *pos) {
         }
     }
     return alphaI;
+}
+
+Tensor *Checker::constructAlphaBasisState(Tensor *tensor,
+                                          DdNode *pos,
+                                          Tensor *basisState) {
+    Tensor *alphaBasisState = newTensor(tensor->_rank);
+    alphaBasisState->_r = tensor->_r;
+    alphaBasisState->_k = tensor->_k;
+    alphaBasisState->_allBDD =
+        std::vector(4, std::deque<DdNode *>(alphaBasisState->_r));
+    for (int i = 0; i < _w; ++i) {
+        for (int j = 0; j < tensor->_r; ++j) {
+            DdNode *curBDD = tensor->_allBDD[i][j];
+            if (Cudd_Cofactor(_ddManager, curBDD, pos) != _zeroBDD)
+                alphaBasisState->_allBDD[i][j] = basisState->_allBDD[_w - 1][0];
+            else
+                alphaBasisState->_allBDD[i][j] = _zeroBDD;
+            Cudd_Ref(alphaBasisState->_allBDD[i][j]);
+        }
+    }
+    return alphaBasisState;
 }
