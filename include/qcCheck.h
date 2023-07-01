@@ -6,7 +6,9 @@ class Checker : public BDDSystem {
 public:
     // Constructor and Destructor
     Checker(int nQubits = 0)
-        : BDDSystem(2 * nQubits) {}
+        : BDDSystem(2 * nQubits)
+        , _identityBDD(nullptr)
+        , _zeroBDD(nullptr) {}
     ~Checker() {}
 
     void addElementToOutputJSON(const std::string key, const std::string value);
@@ -19,8 +21,14 @@ public:
 
 private:
     std::vector<std::pair<std::string, std::string>> _outputJSON;
+    DdNode *_identityBDD;
+    DdNode *_zeroBDD;
 
+    void initIdentityBDD(int nQubits);
+    void initZeroBDD();
     void initTensorToIdentityMatrix(Tensor *tensor);
     void initTensorToBasisState(Tensor *tensor);
-    bool checkIsTensorIdentityGlobalPhase(Tensor *tensor, Tensor *identity);
+    bool checkIsTensorIdentityGlobalPhase(Tensor *tensor);
+    DdNode *pickOneNonzeroCommonEntryPosition(Tensor *tensor);
+    Tensor *constructAlphaIdentity(Tensor *tensor, DdNode *minterm);
 };
