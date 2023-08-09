@@ -102,7 +102,7 @@ void Checker::checkBySimulation(const Circuit *circuitU,
 
         if (eqCheckTwoTensor(Un, Vn))
             addElementToOutputJSON("equivalence",
-                                   "probably_equivalent_up_to_global_phase");
+                                   "probably_equivalent");
         else
             addElementToOutputJSON("equivalence", "not_equivalent");
 
