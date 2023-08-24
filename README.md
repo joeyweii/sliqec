@@ -5,16 +5,16 @@
 
 
 ## Build
-First configure CUDD:
+Clone the project
 ```
-cd cudd
-./configure --enable-dddmp --enable-obj --enable-shared --enable-static
-cd ..
+$ git clone --recurse-submodules https://github.com/joeyweii/sliqec.git
 ```
-Then build the checker with CMake, type the command at the root directory.
+Build the checker with CMake, type the command at the root directory.
 ```
-$ mkdir build && cd build
-$ cmake .. && cmake --build .
+$ mkdir build
+$ cd build
+$ cmake ..
+$ cmake --build .
 ```
 
 ## Execution
